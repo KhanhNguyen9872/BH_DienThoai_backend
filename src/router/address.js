@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../utils/mysql'); // Adjust the path as needed
-const { verifyToken } = require('../utils/authenticate');
-const getUserId = require('../utils/lib');
+const { getUserId } = require('../utils/lib');
 
-router.get('/', verifyToken, getUserId, async (req, res) => {
+router.get('/', getUserId, async (req, res) => {
     const userId = req.user.userId; // Get the user ID from the token
 
     try {
@@ -18,7 +17,7 @@ router.get('/', verifyToken, getUserId, async (req, res) => {
     }
 });
 
-router.get('/:id', verifyToken, getUserId, async (req, res) => {
+router.get('/:id', getUserId, async (req, res) => {
     const userId = req.user.userId; // Get the user ID from the token
     const addressId = req.params.id; // Get the address ID from the URL parameter
 
@@ -39,7 +38,7 @@ router.get('/:id', verifyToken, getUserId, async (req, res) => {
 
 
 // POST route to add a new address
-router.post('/', verifyToken, getUserId, async (req, res) => {
+router.post('/', getUserId, async (req, res) => {
     const userId = req.user.userId; // Get the user ID from the token
     const { fullName, address, phone } = req.body; // Get address data from the request body
 
@@ -69,7 +68,7 @@ router.post('/', verifyToken, getUserId, async (req, res) => {
 });
 
 // DELETE route to remove an address by ID
-router.delete('/:id', verifyToken, getUserId, async (req, res) => {
+router.delete('/:id', getUserId, async (req, res) => {
     const userId = req.user.userId; // Get the user ID from the token
     const addressId = req.params.id; // Get the address ID from the URL
 
@@ -92,7 +91,7 @@ router.delete('/:id', verifyToken, getUserId, async (req, res) => {
 });
 
 // PUT route to update an existing address by ID
-router.put('/:id', verifyToken, getUserId, async (req, res) => {
+router.put('/:id', getUserId, async (req, res) => {
     const userId = req.user.userId; // Get the user ID from the token
     const addressId = req.params.id; // Get the address ID from the URL parameter
     const { fullName, address, phone } = req.body; // Get updated address data from the request body

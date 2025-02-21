@@ -7,6 +7,7 @@ const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config({ path: './config/.env' });
 const db = require('./utils/mysql'); // Import the MySQL connection
+const { verifyToken } = require('./utils/authenticate');
 
 const app = express();
 const port = 5000;
@@ -26,8 +27,8 @@ const address = require('./router/address');
 // Example route
 app.use('/products', products);
 app.use('/accounts', accounts);
-app.use('/user', users);
-app.use('/address', address);
+app.use('/user', verifyToken, users);
+app.use('/address', verifyToken, address);
 
 // Default 404 handler
 app.use((req, res, next) => {

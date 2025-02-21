@@ -1,4 +1,5 @@
 const db = require('./mysql');
+const crypto = require('crypto');
 
 const getUserId = (req, res, next) => {
   const accountId = req.user.id; // Assuming req.user.id contains the account ID
@@ -23,4 +24,8 @@ const getUserId = (req, res, next) => {
   });
 };
 
-module.exports = getUserId;
+function md5(str) {
+  return crypto.createHash('md5').update(str).digest('hex');
+}
+
+module.exports = { getUserId, md5 };

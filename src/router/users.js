@@ -1,10 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../utils/mysql'); // Adjust the path as needed
-const { verifyToken } = require('../utils/authenticate');
 
 // Route to get user information - GET /users
-router.get('/', verifyToken, async (req, res) => {
+router.get('/', async (req, res) => {
     // Access user information from req.user (set by verifyToken middleware)
     const userId = req.user.id;  // Changed to userId
 
