@@ -5,12 +5,12 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
-dotenv.config({ path: './config/.env' });
+dotenv.config();
 const db = require('./utils/mysql'); // Import the MySQL connection
 const { verifyToken } = require('./utils/authenticate');
-
+const telebot = require('./utils/telebot');
 const app = express();
-const port = 5000;
+const port = process.env.EXPRESS_PORT || 5000;
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true })); // extended: true allows parsing of complex objects

@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-const { SECRET_TOKEN } = require('../config/config');
 
 const verifyToken = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -10,7 +9,7 @@ const verifyToken = (req, res, next) => {
 
     const token = authHeader.split(' ')[1]; // Bearer <token>
 
-    jwt.verify(token, SECRET_TOKEN, (err, decoded) => {
+    jwt.verify(token, process.env.SECRET_KEY, (err, decoded) => {
         if (err) {
             return res.status(403).json({ message: 'Invalid token' });
         }

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../utils/mysql');
 const { getUserId } = require('../utils/lib');
+const { sendTelegramMessage } = require('../utils/telebot');
 
 // Get all orders of user
 router.get('/', getUserId, async (req, res) => {
@@ -145,7 +146,8 @@ router.post('/', getUserId, async (req, res) => {
 
         // Commit the transaction
         await db.promise().commit();
-
+        
+        sendTelegramMessage(`New order created: ${orderId}`);
         return res.status(201).json({ message: 'Order created successfully', orderId });
 
     } catch (error) {
@@ -178,6 +180,7 @@ router.post('/:id/success', getUserId, async (req, res) => {
             ['Đang chờ xác nhận', orderId]
         );
 
+        sendTelegramMessage(`Order ${orderId} is waiting for confirmation`);
         return res.json({ message: 'Order status updated successfully' });
 
     } catch (error) {
@@ -240,6 +243,7 @@ router.delete('/:orderId', getUserId, async (req, res) => {
         // Commit the transaction
         await db.promise().commit();
 
+        sendTelegramMessage(`Order ${orderId} has been canceled`);
         return res.json({ message: 'Order canceled successfully' });
 
     } catch (error) {

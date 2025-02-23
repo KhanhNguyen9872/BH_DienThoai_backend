@@ -2,11 +2,11 @@ const mysql = require('mysql2');  // Use mysql2 package
 
 // Create a MySQL connection using environment variables
 const db = mysql.createConnection({
-  host: '127.0.0.1',
-  user: 'root',
-  password: 'khanhnguyen',
-  database: 'phone_shop',
-  port: '3306'
+  host: process.env.MYSQL_HOST,
+  user: process.env.MYSQL_USER,
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DB,
+  port: process.env.MYSQL_PORT
 });
 
 // Connect to the database

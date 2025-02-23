@@ -4,7 +4,6 @@ const crypto = require('crypto');
 const db = require('../utils/mysql'); // Assuming you have a db connection setup in db.js
 const { check, validationResult } = require('express-validator'); // For input validation
 const jwt = require('jsonwebtoken'); // Import jsonwebtoken
-const { SECRET_TOKEN } = require('../config/config');
 const { md5 } = require('../utils/lib');
 const { verifyToken } = require('../utils/authenticate');
 
@@ -46,7 +45,7 @@ router.post(
         id: user.id
       };
 
-      const accessToken = jwt.sign(payload, SECRET_TOKEN, {
+      const accessToken = jwt.sign(payload, process.env.SECRET_KEY, {
         expiresIn: '12h' // Token expires in 12 hours
       });
 
