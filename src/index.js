@@ -23,12 +23,18 @@ const products = require('./router/products');
 const accounts = require('./router/accounts');
 const users = require('./router/users');
 const address = require('./router/address');
+const carts = require('./router/carts');
+const vouchers = require('./router/vouchers');
+const orders = require('./router/orders');
 
 // Example route
 app.use('/products', products);
 app.use('/accounts', accounts);
 app.use('/user', verifyToken, users);
 app.use('/address', verifyToken, address);
+app.use('/carts', verifyToken, carts);
+app.use('/vouchers', verifyToken, vouchers);
+app.use('/orders', verifyToken, orders);
 
 // Default 404 handler
 app.use((req, res, next) => {
