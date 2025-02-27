@@ -26,6 +26,7 @@ const address = require('./router/address');
 const carts = require('./router/carts');
 const vouchers = require('./router/vouchers');
 const orders = require('./router/orders');
+const chatbot = require('./router/chatbot');
 
 // Example route
 app.use('/products', products);
@@ -35,6 +36,45 @@ app.use('/address', verifyToken, address);
 app.use('/carts', verifyToken, carts);
 app.use('/vouchers', verifyToken, vouchers);
 app.use('/orders', verifyToken, orders);
+app.use('/chatbot', verifyToken, async (req, res, next) => {
+  try {
+    // Query the database to check the value of CHATBOT_ENABLE using promise-based syntax
+    const [rows] = await db.promise().query("SELECT value FROM settings WHERE `key` = 'CHATBOT_ENABLE'");
+
+    if (rows.length > 0 && rows[0].value === '1') {
+      // If the value is '1', proceed to the next middleware or chatbot logic
+      return next();
+    } else {
+      // If the value is '0', deny access
+      return res.status(403).json({ message: 'Access denied. Chatbot is disabled.' });
+    }
+  } catch (err) {
+    console.error('Error checking chatbot settings:', err);
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+}, chatbot);
+
+app.get('/status', async (req, res) => {
+  try {
+    // Query the database for both the "MAINTENANCE" and "CHATBOT_ENABLE" keys
+    const [maintenanceRows] = await db.promise().query('SELECT value FROM settings WHERE `key` = "MAINTENANCE"');
+    const [chatbotRows] = await db.promise().query('SELECT value FROM settings WHERE `key` = "CHATBOT_ENABLE"');
+
+    // Check if the keys exist and return the appropriate status
+    const maintenanceStatus = maintenanceRows[0]?.value == '0' ? 'ALIVE' : 'MAINTENANCE';
+    const chatbotEnabled = chatbotRows[0]?.value == '1' ? true : false;
+
+    // Return the status and the chatbot flag
+    res.json({
+      status: maintenanceStatus,
+      chatbot: chatbotEnabled ? '1' : '0'
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ status: 'ERROR' });
+  }
+});
 
 // Default 404 handler
 app.use((req, res, next) => {
