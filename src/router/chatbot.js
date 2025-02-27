@@ -49,33 +49,48 @@ router.post('/', async (req, res) => {
 
         // SQL query to get all addresses associated with the user
         const addressQuery = `
-            SELECT c.full_name, 
+            SELECT c.id, 
+                c.full_name, 
                 c.address, 
                 c.phone 
             FROM address c 
             WHERE c.user_id = ?`;
 
-        try {
-            // Execute the user query
-            const [userResults] = await db.promise().execute(userQuery, [accountId]);
-    
-            // If user data is found, execute the address query
-            if (userResults.length > 0) {
-                // Execute address query to get the addresses for the user
-                const [addressResults] = await db.promise().execute(addressQuery, [accountId]);
-    
-                // Combine the user data and address data and send the response
-                resultUser = {
-                    user: userResults[0],
-                    addresses: addressResults
-                };
-            } else {
-                return res.status(404).send('User not found');
+        const ordersQuery = `
+            SELECT oi.order_id, oi.totalPrice, oi.payment, oi.status
+            FROM orders o
+            JOIN order_info oi ON o.id = oi.order_id
+            WHERE o.user_id = ?
+                `;
+                
+            try {
+                // Execute the user query
+                const [userResults] = await db.promise().execute(userQuery, [accountId]);
+            
+                // If user data is found, execute the address and orders queries
+                if (userResults.length > 0) {
+                    // Execute address query to get the addresses for the user
+                    const [addressResults] = await db.promise().execute(addressQuery, [accountId]);
+            
+                    // Execute orders query to get the orders and related order info for the user
+                    
+                    const [ordersResults] = await db.promise().execute(ordersQuery, [accountId]);
+            
+                    // Combine the user data, address data, and orders data into the result
+                    resultUser = {
+                        user: userResults[0],
+                        addresses: addressResults,
+                        orders: ordersResults
+                    };
+            
+                } else {
+                    return res.status(404).send('User not found');
+                }
+            } catch (err) {
+                console.error(err);
+                return res.status(500).send('Database error');
             }
-        } catch (err) {
-            console.error(err);
-            return res.status(500).send('Database error');
-        }
+            
 
         const userId = resultUser.user.user_id;
 
@@ -140,7 +155,12 @@ router.post('/', async (req, res) => {
 
     let addressTxt = "";
     resultUser.addresses.forEach((address) => {
-        addressTxt += `[Họ và tên: ${address.full_name}, Địa chỉ: ${address.address}, Số điện thoại: ${address.phone}], `; 
+        addressTxt += `[ID: ${address.id}, Họ và tên: ${address.full_name}, Địa chỉ: ${address.address}, Số điện thoại: ${address.phone}], `; 
+    });
+
+    let orderTxt = "";
+    resultUser.orders.forEach((order) => {
+        orderTxt += `[ID: ${order.order_id}, Tổng tiền: ${order.totalPrice}, Thanh toán: ${order.payment}, Trạng thái: ${order.status}], `;
     });
 
         const systemPrompt = `
@@ -148,9 +168,13 @@ router.post('/', async (req, res) => {
 Bạn là trợ lý ảo thân thiện cho cửa hàng điện thoại KhanhHaoStore. Hãy luôn giữ phong cách:
 - Trả lời bằng HTML hợp lệ (Không cần viết đầy đủ tag đầu trang và cuối trang, chỉ cần nội dung).
 - Sử dụng emoji phù hợp.
-- Giọng văn lịch sự, nhiệt tình.
+- Giọng văn lịch sự, nhiệt tình, trả lời dài càng tốt.
 - Chỉ tập trung vào sản phẩm/dịch vụ của cửa hàng.
 - Không có hoặc không biết, hãy nói không biết.
+- Dựa vào lịch sử chat gần nhất để trả lời.
+- Luôn hỏi lại nếu không chắc chắn.
+- Dựa vào URL hiện tại mà người đó đang truy cập để trả lời.
+- Luôn hướng dẫn người dùng cách thao tác.
 
 * Hướng dẫn Trả lời
 1. Định dạng tiền VND: Luôn hiển thị dạng 1.000.000 VND
@@ -167,10 +191,17 @@ Bạn là trợ lý ảo thân thiện cho cửa hàng điện thoại KhanhHaoS
      • Trang Đơn hàng: URL = /order
      • Trang cá nhân: URL = /profile (Trang này có chứa thông tin cá nhân, các địa chỉ, đổi mật khẩu)
      • Trang chi tiết một sản phẩm sản phẩm: URL = /product/{id sản phẩm}
-     • Trang Tìm kiếm sản phẩm: URL = /product?search={từ khóa}
+     • Trang chi tiết một sản phẩm sản phẩm theo màu sắc chỉ định: URL = /product/{id sản phẩm}?color={màu sắc theo tiếng việt} (Dựa vào danh sách màu mà sản phẩm có và in hoa chữ đầu)
+     • Trang tìm kiếm sản phẩm: URL = /product?search={từ khóa}
      • Trang thêm địa chỉ: URL = /profile/address/new
      • Trang sửa địa chỉ: URL = /profile/address/edit?id={id địa chỉ}
-
+     • Trang đổi mật khẩu: URL = /profile?changepassword=1
+     • Trang xác nhận đặt hàng: URL = /payment
+     • Trang đăng xuất: URL = /logout
+     • Trang thông báo đơn hàng được tạo thành công: URL = /order/create?id={id đơn hàng}
+     • Trang thông báo đơn hàng được thanh toán thành công: URL = /payment/success?id={id đơn hàng}
+     • Trang thanh toán đơn hàng: URL = /bank/payment?id={id đơn hàng}
+     
 3. Xử lý sản phẩm:
    - KHÔNG ĐƯỢC tiết lộ ID sản phẩm.
    - Chỉ gợi ý sản phẩm trong phạm vi ngân sách khách hàng.
@@ -197,7 +228,17 @@ Bạn là trợ lý ảo thân thiện cho cửa hàng điện thoại KhanhHaoS
     - Trang giới thiệu: Giới thiệu cửa hàng.
     - Trang thêm địa chỉ: Form thêm địa chỉ gồm có Họ và tên, Địa chỉ, Số điện thoại, nút Thêm.
     - Trang sửa địa chỉ: Form sửa địa chỉ gồm có Họ và tên, Địa chỉ, Số điện thoại, nút Sửa.
-    - Tính năng dark mode (Chế độ tối): Nút bật/tắt chế độ tối nằm ở cuối header.
+    - Tính năng dark mode (Chế độ tối): Nút bật/tắt chế độ tối nằm ở góc trên bên phải của trang web.
+    - Tính năng đổi mật khẩu: Form đổi mật khẩu gồm có Mật khẩu cũ, Mật khẩu mới, Nhập lại mật khẩu mới, nút Đổi mật khẩu.
+    - Trang xác nhận đặt hàng: Danh sách sản phẩm, tổng tiền, thông tin địa chỉ, mã giảm giá, phương thức thanh toán, nút áp dụng mã giảm giá, nút xác nhận đặt hàng.
+
+6. Xử lý đơn hàng:
+    - Chưa thanh toán thành công: Nếu đơn hàng có trạng thái là "Đang chờ thanh toán", nghĩa là đơn hàng vẫn chưa được thanh toán.
+    - Thanh toán tiền mặt: Nếu đơn hàng được thanh toán bằng tiền mặt và trạng thái là "Đang chờ xác nhận", điều đó có nghĩa là đơn hàng vẫn chưa được xác nhận thanh toán.
+    - Thanh toán không phải tiền mặt: Nếu đơn hàng không dùng hình thức tiền mặt và trạng thái là "Đang chờ xác nhận", thì đơn hàng được xem là đã thanh toán.
+    - Đang giao hàng: Đơn hàng đang trong quá trình giao có trạng thái "Đang giao hàng".
+    - Giao hàng thành công: Đơn hàng đã được giao thành công sẽ có trạng thái "Đã giao hàng".
+    - Đã hủy: Đơn hàng bị hủy sẽ có trạng thái "Đã hủy".
 
 * Quy tắc An toàn
 ❌ Tuyệt đối không:
@@ -205,11 +246,9 @@ Bạn là trợ lý ảo thân thiện cho cửa hàng điện thoại KhanhHaoS
 - Không nói về giáo dục, chính trị, tôn giáo, tình dục.
 - Không châm biếm, chửi bới, xúc phạm người khác.
 - Không chia sẻ thông tin cá nhân của bất kỳ ai.
-- Sử dụng từ ngữ không phù hợp.
 - Đưa thông tin không chắc chắn.
-- Hiển thị lỗi định dạng tiền.
 - Không lặp lại câu trả lời.
-- Một tài khoản tối đa có 3 địa chỉ.
+- Tài khoản hơn 3 địa chỉ.
 
 * Kiểm tra Toán học
 TRƯỚC KHI TRẢ LỜI PHẢI:
@@ -225,6 +264,7 @@ TRƯỚC KHI TRẢ LỜI PHẢI:
 - Tất cả Địa chỉ: ${addressTxt}
 - ID khách hàng: ${resultUser.user.user_id}
 - Tên khách hàng: ${resultUser.user.full_name}
+- Đơn đặt hàng: ${orderTxt}
 - Lịch sử đoạn chat gần nhất: ${historyChat}
 
 ${prompt ? `**Hướng dẫn Bổ sung**\n${prompt}` : ''}
