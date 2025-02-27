@@ -27,15 +27,57 @@ router.get('/', getUserId, async (req, res) => {
     }
   });
 
-router.post('/', getUserId, async (req, res) => {
+router.post('/', async (req, res) => {
     try {
         // Get the message from the request body
         const { message, prompt } = req.body;
-        const userId = req.user.userId; // Get the user ID from the token
-
-        if (!userId) {
+        const accountId = req.user?.id;
+        if (!accountId) {
             return res.status(400).json({ error: 'User ID is required.' });
         }
+
+        let resultUser = null;
+
+        const userQuery = `
+            SELECT a.username, 
+                CONCAT(b.first_name, ' ', b.last_name) AS full_name, 
+                b.email,
+                b.id AS user_id 
+            FROM account a
+            JOIN user b ON a.user_id = b.id 
+            WHERE a.id = ?`;
+
+        // SQL query to get all addresses associated with the user
+        const addressQuery = `
+            SELECT c.full_name, 
+                c.address, 
+                c.phone 
+            FROM address c 
+            WHERE c.user_id = ?`;
+
+        try {
+            // Execute the user query
+            const [userResults] = await db.promise().execute(userQuery, [accountId]);
+    
+            // If user data is found, execute the address query
+            if (userResults.length > 0) {
+                // Execute address query to get the addresses for the user
+                const [addressResults] = await db.promise().execute(addressQuery, [accountId]);
+    
+                // Combine the user data and address data and send the response
+                resultUser = {
+                    user: userResults[0],
+                    addresses: addressResults
+                };
+            } else {
+                return res.status(404).send('User not found');
+            }
+        } catch (err) {
+            console.error(err);
+            return res.status(500).send('Database error');
+        }
+
+        const userId = resultUser.user.user_id;
 
         if (!message || !message?.trim()) {
             return res.status(400).json({ error: 'Message is required.' });
@@ -51,7 +93,8 @@ router.post('/', getUserId, async (req, res) => {
             `SELECT 
     p.id, 
     p.name, 
-    p.color
+    p.color,
+    p.favorite
    FROM product p;`
         );
 
@@ -61,17 +104,22 @@ router.post('/', getUserId, async (req, res) => {
             row.color.forEach((color) => {
                 // Thêm định dạng số tiền VNĐ
                 const formattedPrice = new Intl.NumberFormat('vi-VN').format(color.money);
-                colors += `Màu ${color.name} có giá ${formattedPrice} VND, `;
+                colors += `Màu ${color.name} có giá ${formattedPrice} VND còn ${color.quantity} cái `;
+
+                if (color.moneyDiscount) {
+                    const formattedPrice = new Intl.NumberFormat('vi-VN').format(color.moneyDiscount);
+                    colors += `và giảm giá còn ${formattedPrice} VND`
+                }
+
+                colors += ", ";
             });
             colors += "}";
         
-            allProductTxt += `[ID sản phẩm: ${row.id}, tên: ${row.name}, màu sắc: ${colors}],`; // Đã bỏ ID
+            allProductTxt += `[ID: ${row.id}, tên: ${row.name}, màu: ${colors}, lượt thích: ${row.favorite.length}],`; // Đã bỏ ID
         });
 
-        console.log(allProductTxt);
-
         // Query to fetch chat history from history_chatbot table
-      const [rows1] = await db.promise().query(
+      let [rows1] = await db.promise().query(
         'SELECT message, isBot FROM history_chatbot WHERE user_id = ? ORDER BY time ASC',
         [userId]
       );
@@ -89,59 +137,102 @@ router.post('/', getUserId, async (req, res) => {
         // Append the formatted message with its type (Bot/User) to the historyChat string
         historyChat += `[${messageType}: ${row.message}], `;
     });
-    
+
+    let addressTxt = "";
+    resultUser.addresses.forEach((address) => {
+        addressTxt += `[Họ và tên: ${address.full_name}, Địa chỉ: ${address.address}, Số điện thoại: ${address.phone}], `; 
+    });
 
         const systemPrompt = `
-**Role Definition**
-Bạn là trợ lý ảo thân thiện cho cửa hàng điện thoại KhanhStore. Hãy luôn giữ phong cách:
-- Trả lời bằng HTML hợp lệ (Không cần viết đầy đủ tag đầu trang và cuối trang, chỉ cần nội dung)
-- Sử dụng emoji phù hợp
-- Giọng văn lịch sự, nhiệt tình
-- Chỉ tập trung vào sản phẩm/dịch vụ của cửa hàng
-- Không có hoặc không biết, hãy nói không biết
+* Role Definition
+Bạn là trợ lý ảo thân thiện cho cửa hàng điện thoại KhanhHaoStore. Hãy luôn giữ phong cách:
+- Trả lời bằng HTML hợp lệ (Không cần viết đầy đủ tag đầu trang và cuối trang, chỉ cần nội dung).
+- Sử dụng emoji phù hợp.
+- Giọng văn lịch sự, nhiệt tình.
+- Chỉ tập trung vào sản phẩm/dịch vụ của cửa hàng.
+- Không có hoặc không biết, hãy nói không biết.
 
-**Hướng dẫn Trả lời**
+* Hướng dẫn Trả lời
 1. Định dạng tiền VND: Luôn hiển thị dạng 1.000.000 VND
 2. Chuyển hướng trang:
-   - Dùng nút: <button value="{URL}" name="redirect">{Tên nút}</button>
+   - Dùng nút: <button class="material-button" value="{URL}" name="redirect">{Tên nút}</button>
+   - name="redirect" là bắt buộc để chuyển hướng.
    - Nếu muốn xem sản phẩm nào thì phải dựa vào id sản phẩm để truy cập (/product/{id sản phẩm})
    - URL quan trọng:
-     • Tất cả Sản phẩm: URL = /product
+     • Trang chủ: URL = /
+     • Trang giới thiệu: URL = /about
+     • Trang liên hệ: URL = /contact
+     • Trang sản phẩm: URL = /product
      • Trang Giỏ hàng: URL = /cart
      • Trang Đơn hàng: URL = /order
+     • Trang cá nhân: URL = /profile (Trang này có chứa thông tin cá nhân, các địa chỉ, đổi mật khẩu)
      • Trang chi tiết một sản phẩm sản phẩm: URL = /product/{id sản phẩm}
      • Trang Tìm kiếm sản phẩm: URL = /product?search={từ khóa}
+     • Trang thêm địa chỉ: URL = /profile/address/new
+     • Trang sửa địa chỉ: URL = /profile/address/edit?id={id địa chỉ}
 
 3. Xử lý sản phẩm:
-   - KHÔNG tiết lộ ID sản phẩm
-   - Chỉ gợi ý sản phẩm trong phạm vi ngân sách khách hàng
+   - KHÔNG ĐƯỢC tiết lộ ID sản phẩm.
+   - Chỉ gợi ý sản phẩm trong phạm vi ngân sách khách hàng.
    - Tất cả sản phẩm trong cửa hàng: ${allProductTxt}
 
-**Quy tắc An toàn**
+4. Hướng dẫn thao tác:
+   - Thêm vào giỏ hàng: Vào trong trang chi tiết sản phẩm -> Chọn màu sắc, số lượng -> Thêm vào giỏ hàng.
+   - Đặt hàng: Vào trong trang giỏ hàng -> Chọn sản phẩm muốn mua -> Đặt hàng.
+   - Đổi mật khẩu: Vào trong trang cá nhân -> Đổi mật khẩu.
+   - Thêm địa chỉ: Vào trong trang cá nhân -> Thêm địa chỉ.
+   - Sửa/xóa địa chỉ: Vào trong trang cá nhân -> Sửa/xóa địa chỉ.
+   - Thanh toán đơn hàng: Vào trong trang đơn hàng -> Thanh toán.
+   - Hủy đơn hàng: Vào trong trang đơn hàng -> Hủy đơn hàng.
+
+5. Những trường thông tin có ở từng trang:
+    - Trang chi tiết sản phẩm: ID, tên, màu sắc, giá, số lượng, nút lượt thích.
+    - Trang giỏ hàng: Danh sách sản phẩm, màu sắc, tổng tiền, nút đặt hàng.
+    - Trang đơn hàng: Danh sách đơn hàng, trạng thái, thông tin đặt hàng, nút thanh toán, nút hủy đơn hàng.
+    - Trang cá nhân: Thông tin tên đăng nhập, họ, tên, email, danh sách địa chỉ, nút thêm địa chỉ, nút đổi mật khẩu.
+    - Trang tìm kiếm: Danh sách sản phẩm tìm kiếm được.
+    - Trang sản phẩm: Danh sách các sản phẩm, có phân trang.
+    - Trang chủ: Hình ảnh banner, danh sách sản phẩm được yêu nhất nhiều nhất, sản phẩm ngẫu nhiên.
+    - Trang liên hệ: Thông tin liên hệ.
+    - Trang giới thiệu: Giới thiệu cửa hàng.
+    - Trang thêm địa chỉ: Form thêm địa chỉ gồm có Họ và tên, Địa chỉ, Số điện thoại, nút Thêm.
+    - Trang sửa địa chỉ: Form sửa địa chỉ gồm có Họ và tên, Địa chỉ, Số điện thoại, nút Sửa.
+    - Tính năng dark mode (Chế độ tối): Nút bật/tắt chế độ tối nằm ở cuối header.
+
+* Quy tắc An toàn
 ❌ Tuyệt đối không:
 - Đề cập đến các sản phẩm ngoài cửa hàng.
-- Sử dụng từ ngữ không phù hợp
-- Đưa thông tin không chắc chắn
-- Hiển thị lỗi định dạng tiền
-- Không lặp lại câu trả lời
-- Làm tròn số hoặc thay đổi số 0 cuối (25.000.000 → 2.500.000)
+- Không nói về giáo dục, chính trị, tôn giáo, tình dục.
+- Không châm biếm, chửi bới, xúc phạm người khác.
+- Không chia sẻ thông tin cá nhân của bất kỳ ai.
+- Sử dụng từ ngữ không phù hợp.
+- Đưa thông tin không chắc chắn.
+- Hiển thị lỗi định dạng tiền.
+- Không lặp lại câu trả lời.
+- Một tài khoản tối đa có 3 địa chỉ.
 
-**🛑 Kiểm tra Toán học**
+* Kiểm tra Toán học
 TRƯỚC KHI TRẢ LỜI PHẢI:
-1. Đếm số chữ số trong giá sản phẩm từ database
-2. So sánh với số tiền khách hàng có
-3. Không gợi ý sản phẩm ngoài phạm vi ngân sách
-4. Lặp lại quy trình cho từng màu sắc
+1. Đếm số chữ số trong giá sản phẩm từ thông tin sản phẩm.
+2. So sánh với số tiền khách hàng có.
+3. Không gợi ý sản phẩm ngoài phạm vi ngân sách.
+4. Lặp lại quy trình cho từng màu sắc.
 
-**Ngữ cảnh**
-- Tên khách hàng: ${req.user.fullName}
+* Ngữ cảnh
+- URL của trang web: http://khanhhaostore.com
+- Username: ${resultUser.user.username}
+- Email: ${resultUser.user.email}
+- Tất cả Địa chỉ: ${addressTxt}
+- ID khách hàng: ${resultUser.user.user_id}
+- Tên khách hàng: ${resultUser.user.full_name}
+- Lịch sử đoạn chat gần nhất: ${historyChat}
 
 ${prompt ? `**Hướng dẫn Bổ sung**\n${prompt}` : ''}
 `.trim();
 
         // Prepare the request payload for the external API
         const payload = {
-          model:  "gemma-2-2b-it",
+          model:  "gemma-2-9b-it",
           messages: [
             { role: "system", 
                 content: systemPrompt
