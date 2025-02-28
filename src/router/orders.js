@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../utils/mysql');
-const { getUserId } = require('../utils/lib');
+const { getUserId, sendNotification } = require('../utils/lib');
 const { sendTelegramMessage } = require('../utils/telebot');
 
 // Get all orders of user
@@ -76,7 +76,6 @@ router.get('/:id', getUserId, async (req, res) => {
     }
 });
 
-// Create a new order
 router.post('/', getUserId, async (req, res) => {
     try {
         const userId = req.user.userId;
@@ -146,8 +145,62 @@ router.post('/', getUserId, async (req, res) => {
 
         // Commit the transaction
         await db.promise().commit();
-        
-        sendTelegramMessage(`New order created: ${orderId}`);
+
+        // Fetch buyer's full name, payment method, and order date (orderAt)
+        const [orderDetails] = await db.promise().query(
+            `SELECT u.first_name, u.last_name, oi.payment, oi.orderAt 
+             FROM orders o 
+             JOIN user u ON u.id = o.user_id 
+             JOIN order_info oi ON oi.order_id = o.id
+             WHERE o.id = ?`,
+            [orderId]
+        );
+
+        if (orderDetails.length === 0) {
+            return res.status(404).json({ message: 'Order details not found' });
+        }
+
+        const orderInfo = orderDetails[0];
+        const fullName = `${orderInfo.first_name} ${orderInfo.last_name}`;
+        const orderAt = orderInfo.orderAt;
+
+
+        // Create a detailed product list for the Telegram message
+        let productDetails = '';
+        products.forEach(product => {
+            productDetails += `${product.name} (${product.color})\n`;
+            productDetails += `Số lượng: ${product.quantity}\n`;
+            productDetails += `Giá: ${product.price} VNĐ\n\n`;
+        });
+
+        // If status is 'Đang chờ xác nhận', send a Telegram message
+        if (status === 'Đang chờ xác nhận') {
+            const message = `Đơn hàng mới được tạo:\n\n` +
+                            `ID: ${orderId}\n` +
+                            `Khách hàng: ${fullName}\n` +
+                            `Trạng thái: ${status}\n` +
+                            `Thanh toán: ${payment}\n` +
+                            `Ngày đặt hàng: ${orderAt}\n` +
+                            `Tổng giá trị: ${totalPrice} VNĐ\n\n` +
+                            `Sản phẩm:\n${productDetails}`;
+            sendTelegramMessage(message);
+            await sendNotification(`Hãy xác nhận đơn hàng [ID: ${orderId}]`, `/orders/${orderId}`);
+        }
+
+        // If status is 'Đang chờ thanh toán', send a Telegram message about payment waiting
+        if (status === 'Đang chờ thanh toán') {
+            const message = `Đơn hàng mới được tạo:\n\n` +
+                            `ID: ${orderId}\n` +
+                            `Khách hàng: ${fullName}\n` +
+                            `Trạng thái: Đang chờ khách hàng thanh toán\n` +
+                            `Thanh toán: ${payment}\n` +
+                            `Ngày đặt hàng: ${orderAt}\n` +
+                            `Tổng giá trị: ${totalPrice} VNĐ\n\n` +
+                            `Sản phẩm:\n${productDetails}`;
+            sendTelegramMessage(message);
+            await sendNotification(`Đơn hàng đang chờ thanh toán [ID: ${orderId}]`, `/orders/${orderId}`);
+        }
+
         return res.status(201).json({ message: 'Order created successfully', orderId });
 
     } catch (error) {
@@ -158,7 +211,7 @@ router.post('/', getUserId, async (req, res) => {
     }
 });
 
-// Update order status to "Đang chờ xác nhận"
+
 router.post('/:id/success', getUserId, async (req, res) => {
     try {
         const orderId = req.params.id;
@@ -174,13 +227,51 @@ router.post('/:id/success', getUserId, async (req, res) => {
             return res.status(404).json({ message: 'Order not found' });
         }
 
+        // Get order details and customer information
+        const [orderDetails] = await db.promise().query(
+            `SELECT u.first_name, u.last_name, oi.payment, oi.products, oi.orderAt 
+            FROM orders o 
+            JOIN user u ON u.id = o.user_id 
+            JOIN order_info oi ON oi.order_id = o.id
+            WHERE o.id = ?`,
+            [orderId]
+        );
+
+        if (orderDetails.length === 0) {
+            return res.status(404).json({ message: 'Order details not found' });
+        }
+
+        const orderInfo = orderDetails[0];
+        const fullName = `${orderInfo.first_name} ${orderInfo.last_name}`;
+        const payment = orderInfo.payment;
+        const products = orderInfo.products; // Assuming products are stored as JSON
+        const orderAt = orderInfo.orderAt;
+
+        // Construct the message
+        let productDetails = '';
+        products.forEach(product => {
+            productDetails += `${product.name} (${product.color})\n`;
+            productDetails += `Số lượng: ${product.quantity}\n`;
+            productDetails += `Giá: ${product.price} VNĐ\n\n`;
+        });
+
+        const message = `Đơn hàng ID: ${orderId} đã được thanh toán và đang chờ xác nhận:\n\n` +
+                        `Khách hàng: ${fullName}\n` +
+                        `Trạng thái: Đang chờ xác nhận\n` +
+                        `Thanh toán: ${payment}\n` +
+                        `Ngày đặt hàng: ${orderAt}\n\n` +
+                        `Sản phẩm:\n${productDetails}`;
+
         // Update the order status to "Đang chờ xác nhận"
         await db.promise().query(
             'UPDATE order_info SET status = ? WHERE order_id = ?',
             ['Đang chờ xác nhận', orderId]
         );
 
-        sendTelegramMessage(`Order ${orderId} is waiting for confirmation`);
+        // Send the message to Telegram
+        sendTelegramMessage(message);
+        await sendNotification(`Đã thanh toán, hãy xác nhận đơn hàng [ID: ${orderId}]`, `/orders/${orderId}`);
+
         return res.json({ message: 'Order status updated successfully' });
 
     } catch (error) {
@@ -206,12 +297,13 @@ router.delete('/:orderId', getUserId, async (req, res) => {
 
         // Get the canceled order details
         const [rows] = await db.promise().query(
-            'SELECT products FROM order_info WHERE order_id = ?',
+            'SELECT products, totalPrice FROM order_info WHERE order_id = ?',
             [orderId]
         );
 
         if (rows.length > 0) {
-            const products = rows[0].products;
+            const products = JSON.parse(rows[0].products); // Assuming products are stored as JSON
+            const totalPrice = rows[0].totalPrice;
 
             // Restore product quantities
             for (const product of products) {
@@ -238,12 +330,27 @@ router.delete('/:orderId', getUserId, async (req, res) => {
                     );
                 }
             }
+
+            // Construct the message
+            let productDetails = '';
+            products.forEach(product => {
+                productDetails += `${product.name} (${product.color})\n`;
+                productDetails += `Số lượng: ${product.quantity}\n`;
+                productDetails += `Giá: ${product.moneyDiscount ? product.moneyDiscount : product.money} VNĐ\n\n`;
+            });
+
+            const message = `Đơn hàng ID: ${orderId} đã bị hủy:\n\n` +
+                            `Tổng giá trị: ${totalPrice} VNĐ\n\n` +
+                            `Sản phẩm:\n${productDetails}`;
+
+            // Send the cancellation message to Telegram
+            sendTelegramMessage(message);
+            await sendNotification(`Đơn hàng đã bị hủy [ID: ${orderId}]`, `/orders/${orderId}`)
         }
 
         // Commit the transaction
         await db.promise().commit();
 
-        sendTelegramMessage(`Order ${orderId} has been canceled`);
         return res.json({ message: 'Order canceled successfully' });
 
     } catch (error) {
@@ -253,5 +360,6 @@ router.delete('/:orderId', getUserId, async (req, res) => {
         return res.status(500).json({ message: 'Internal server error' });
     }
 });
+
 
 module.exports = router;

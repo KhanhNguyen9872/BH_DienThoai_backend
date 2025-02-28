@@ -28,4 +28,17 @@ function md5(str) {
   return crypto.createHash('md5').update(str).digest('hex');
 }
 
-module.exports = { getUserId, md5 };
+const sendNotification = async (text, url) => {
+  // Câu lệnh SQL để insert vào bảng notifications
+  const query = 'INSERT INTO notifications (text, url) VALUES (?, ?)';
+  
+  try {
+    // Thực thi câu lệnh SQL với db.promise()
+    await db.promise().query(query, [text, url]);
+    console.log('Notification sent successfully');
+  } catch (err) {
+    console.error('Error inserting notification:', err);
+  }
+};
+
+module.exports = { getUserId, md5, sendNotification };
