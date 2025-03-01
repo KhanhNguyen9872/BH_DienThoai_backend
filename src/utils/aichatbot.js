@@ -107,7 +107,7 @@ const localChatbot = async (systemPrompt, userMessage) => {
   
       // Combine systemPrompt and userMessage into a single text prompt.
       // If systemPrompt is provided, it is concatenated with userMessage.
-      const promptText = systemPrompt ? `${systemPrompt}\nCÂU HỎI CỦA KHÁCH HÀNG: ${userMessage.trim()}` : userMessage.trim();
+      const promptText = systemPrompt ? `\`\`\`${systemPrompt}\`\`\`\n\n\`\`\`CÂU HỎI CỦA KHÁCH HÀNG: ${userMessage.trim()}\`\`\`` : userMessage.trim();
   
       // Prepare the request payload according to the Gemini API documentation
       const payload = {
