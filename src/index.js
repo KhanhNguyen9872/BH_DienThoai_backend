@@ -41,12 +41,14 @@ app.use('/chatbot', verifyToken, async (req, res, next) => {
     // Query the database to check the value of CHATBOT_ENABLE using promise-based syntax
     const [rows] = await db.promise().query("SELECT value FROM settings WHERE `key` = 'CHATBOT_ENABLE'");
 
-    if (rows.length > 0 && rows[0].value === '1') {
+    if (rows.length > 0 && rows[0].value == '0') {
       // If the value is '1', proceed to the next middleware or chatbot logic
+      return res.status(403).json({ message: 'Access denied. Chatbot is disabled.' });
+    } else if (rows.length > 0) {
+      // If the value is '0', deny access
       return next();
     } else {
-      // If the value is '0', deny access
-      return res.status(403).json({ message: 'Access denied. Chatbot is disabled.' });
+      return res.status(403).json({ message: 'Access denied. Chatbot is not configured.' });
     }
   } catch (err) {
     console.error('Error checking chatbot settings:', err);
@@ -62,12 +64,12 @@ app.get('/status', async (req, res) => {
 
     // Check if the keys exist and return the appropriate status
     const maintenanceStatus = maintenanceRows[0]?.value == '0' ? 'ALIVE' : 'MAINTENANCE';
-    const chatbotEnabled = chatbotRows[0]?.value == '1' ? true : false;
+    const chatbotEnabled = chatbotRows[0]?.value;
 
     // Return the status and the chatbot flag
     res.json({
       status: maintenanceStatus,
-      chatbot: chatbotEnabled ? '1' : '0'
+      chatbot: chatbotEnabled
     });
 
   } catch (error) {

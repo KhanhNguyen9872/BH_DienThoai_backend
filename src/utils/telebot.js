@@ -1,30 +1,52 @@
 const axios = require('axios');
+const db = require('./mysql');
 
-// Configure your Telegram Bot credentials.
-// It’s a good idea to store these in environment variables.
-const TELEGRAM_BOT_TOKEN = process.env.BOT_TOKEN;
-const TELEGRAM_CHAT_ID = process.env.BOT_CHAT_ID;
+async function getTelegramSettings() {
+  // Query both BOT_TOKEN and BOT_CHAT_ID from settings
+  const [rows] = await db.promise().query(
+    "SELECT `key`, `value` FROM settings WHERE `key` IN ('BOT_TOKEN', 'BOT_CHAT_ID')"
+  );
+
+  let botToken, botChatId;
+  rows.forEach(row => {
+    if (row.key === 'BOT_TOKEN') {
+      botToken = row.value;
+    } else if (row.key === 'BOT_CHAT_ID') {
+      botChatId = row.value;
+    }
+  });
+
+  // Fallback to environment variables if any value is empty
+  if (!botToken) {
+    botToken = process.env.BOT_TOKEN;
+  }
+  if (!botChatId) {
+    botChatId = process.env.BOT_CHAT_ID;
+  }
+
+  return { botToken, botChatId };
+}
 
 /**
  * Send a message via Telegram using the Bot API.
  *
  * @param {string} message - The message to send.
  */
-function sendTelegramMessage(message) {
-  const telegramApiUrl = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
-  
-  axios
-    .post(telegramApiUrl, {
-      chat_id: TELEGRAM_CHAT_ID,
+async function sendTelegramMessage(message) {
+  try {
+    const { botToken, botChatId } = await getTelegramSettings();
+    const telegramApiUrl = `https://api.telegram.org/bot${botToken}/sendMessage`;
+
+    await axios.post(telegramApiUrl, {
+      chat_id: botChatId,
       text: message,
-    })
-    .then((response) => {
-      // Optionally, log the Telegram API response for debugging.
-      // console.log('Telegram message sent:', response.data);
-    })
-    .catch((err) => {
-      console.error('Failed to send Telegram message:', err);
     });
+
+    // Optionally, log the response for debugging.
+    // console.log('Telegram message sent successfully.');
+  } catch (err) {
+    console.error('Failed to send Telegram message:', err);
+  }
 }
 
 module.exports = { sendTelegramMessage };

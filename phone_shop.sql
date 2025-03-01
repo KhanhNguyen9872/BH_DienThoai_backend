@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th2 28, 2025 lúc 07:36 PM
+-- Thời gian đã tạo: Th3 01, 2025 lúc 05:38 AM
 -- Phiên bản máy phục vụ: 8.0.40
 -- Phiên bản PHP: 8.2.12
 
@@ -225,16 +225,8 @@ INSERT INTO `history_chatbot` (`id`, `user_id`, `message`, `isBot`, `time`) VALU
 (230, 3, 'iPhone 12 có các màu sau: Màu Đen, Màu Xanh Dương, Màu Trắng. \n\n(URL: <a href=\"/product/2\">iPhone 12</a>) \n', 1, '2025-02-27 16:37:35'),
 (231, 3, 'Hãy chuyển hướng tôi sang trang Iphone 12', 0, '2025-02-27 16:37:51'),
 (232, 3, '(URL: <a href=\"/product/2\">iPhone 12</a>) \n', 1, '2025-02-27 16:37:54'),
-(910, 5, 'Xin chào bạn', 0, '2025-02-28 19:53:15'),
-(911, 5, ' 👋  Chào mừng bạn đến với KhanhHaoStore! 😊\n\nBạn muốn xem sản phẩm nào? 🕵️‍♀️\n\nHãy cho mình biết bạn đang tìm kiếm sản phẩm gì để mình giới thiệu nhé. 😁\n\n\n', 1, '2025-02-28 19:53:55'),
-(912, 5, 'Tôi thích màu đen', 0, '2025-02-28 19:54:09'),
-(913, 5, '👋  Vui lòng cho mình biết bạn muốn xem sản phẩm nào?  🕵️‍♀️ \n\n\nBạn có thể chọn từ danh sách sản phẩm sau đây:\n\n* Google Pixel 3 (Màu Đen) - **2.700.000 VND** còn 1 cái và giảm giá\n* iPhone 12 (Màu Đen) - **24.000.000 VND** còn 2 cái và giảm giá\n* Xiaomi Mi 11 Lite 5G (Màu Đen) - **14.000.000 VND** còn 3 cái\n\n <button class=\"material-button\" value=\"/product/1\" name=\"redirect\">Google Pixel 3</button>\n<button class=\"material-button\" value=\"/product/2\" name=\"redirect\">iPhone 12</button>\n<button class=\"material-button\" value=\"/product/3\" name=\"redirect\">Xiaomi Mi 11 Lite 5G</button> \n\n\n\n', 1, '2025-02-28 19:54:41'),
-(914, 5, 'Tôi thích màu hồng', 0, '2025-02-28 19:55:50'),
-(915, 5, '👋  Vui lòng cho mình biết bạn muốn xem sản phẩm nào?  🕵️‍♀️ \n\n\nBạn có thể chọn từ danh sách sản phẩm sau đây:\n\n* Xiaomi Mi 11 Lite 5G (Màu Hồng) - **14.000.000 VND** còn 1 cái   \n <button class=\"material-button\" value=\"/product/3\" name=\"redirect\">Xiaomi Mi 11 Lite 5G</button> \n\n\n\n', 1, '2025-02-28 19:56:43'),
-(916, 5, 'còn sản phẩm nào màu hồng nữa không?', 0, '2025-02-28 19:57:03'),
-(917, 5, '👋  Vui lòng cho mình biết bạn muốn xem sản phẩm nào?  🕵️‍♀️\n\n\nHiện tại, Xiaomi Mi 11 Lite 5G (Màu Hồng) là duy nhất có màu hồng.\n\nBạn muốn xem thêm thông tin về sản phẩm này? <button class=\"material-button\" value=\"/product/3\" name=\"redirect\">Xiaomi Mi 11 Lite 5G</button>\n\n\nHoặc bạn muốn xem sản phẩm khác?', 1, '2025-02-28 19:57:19'),
-(918, 5, 'Samsung Galaxy S21 có màu hồng mà', 0, '2025-02-28 19:57:42'),
-(919, 5, '👋  Rõ ràng bạn rất quan tâm đến các sản phẩm màu hồng! 🤩\n\nThật vậy, Samsung Galaxy S21 có màu Hồng 🌹, giá **21.000.000 VND** còn 4 cái và giảm giá.\n\nBạn muốn xem thêm thông tin về sản phẩm này? <button class=\"material-button\" value=\"/product/4\" name=\"redirect\">Samsung Galaxy S21</button>\n\n\nHoặc bạn muốn xem sản phẩm khác? 🤔\n', 1, '2025-02-28 19:58:00');
+(923, 5, 'Hello', 0, '2025-03-01 11:36:04'),
+(924, 5, '```html\n<div>\n  Chào Khánh Nguyễn 👋! Bạn đang xem sản phẩm Google Pixel 3 tại KhanhHaoStore phải không ạ?\n  <br>\n  Google Pixel 3 hiện có các màu:\n  <ul>\n    <li>Màu Đen: Giá 2.700.000 VND (đã giảm giá), còn 1 cái.</li>\n    <li>Màu Trắng: Giá 2.900.000 VND (đã giảm giá), còn 2 cái.</li>\n    <li>Màu Hồng: Giá 3.200.000 VND, hiện đang hết hàng 😔.</li>\n  </ul>\n  Bạn muốn biết thêm thông tin gì về sản phẩm này không ạ? Hoặc bạn muốn xem các sản phẩm khác của KhanhHaoStore?\n</div>\n```', 1, '2025-03-01 11:36:07');
 
 -- --------------------------------------------------------
 
@@ -426,7 +418,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('RWjdjB2ynGYwMhtHY2T80kYNk6Z2fycSAqxeqvza', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoieHBMV25ieGlKRHRicDM1ZVRLTEVwZmg0YkJjZXNPZ1ZzNE85MVNhNyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9sb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MzoidXJsIjthOjE6e3M6ODoiaW50ZW5kZWQiO3M6MzE6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9kYXNoYm9hcmQiO319', 1740767761);
+('7GVJUmwTormJJtEEcvtU5JFEGQLY7dHFwuFJiKrb', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiTDQxOE9hNGI0WlFQM2pPOFNTc3pYTEM4OUFIR05HazREYmI1V3ZNRyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzA6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9zZXR0aW5ncyI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MzoidXJsIjthOjA6e31zOjk6ImZ1bGxfbmFtZSI7czoyMDoiTmd1eeG7hW4gVsSDbiBLaMOhbmgiO3M6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1740803848),
+('TBjQU74ENXpkEfebOS6wl1mfax5ttCdkbwZ1BgDv', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoia3J0N3AyMDdhT1RlMThoNmdVeWk5dGg1aDNKenRKOGV0UjNPQkg3NiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9sb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MzoidXJsIjthOjE6e3M6ODoiaW50ZW5kZWQiO3M6MzE6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9kYXNoYm9hcmQiO319', 1740801870);
 
 -- --------------------------------------------------------
 
@@ -450,7 +443,11 @@ INSERT INTO `settings` (`id`, `key`, `value`) VALUES
 (3, 'BOT_CHAT_ID', '1618522645'),
 (4, 'MAINTENANCE', '0'),
 (5, 'BOT_SEND_NOTIFICATION_AFTER_ORDER', '1'),
-(6, 'CHATBOT_ENABLE', '1');
+(6, 'CHATBOT_ENABLE', '2'),
+(7, 'LOCAL_CHATBOT_MODEL', 'gemma-2-9b-it'),
+(8, 'GEMINI_API_KEY', 'AIzaSyDriudRHcFKx8e-rg_5uF1kT3IH56K2b-s'),
+(9, 'LOCAL_CHATBOT_URL', 'http://127.0.0.1:1234'),
+(10, 'LOCAL_CHATBOT_TEMPERATURE', '1.0');
 
 -- --------------------------------------------------------
 
@@ -699,7 +696,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT cho bảng `history_chatbot`
 --
 ALTER TABLE `history_chatbot`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=920;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=925;
 
 --
 -- AUTO_INCREMENT cho bảng `jobs`
@@ -741,7 +738,7 @@ ALTER TABLE `product`
 -- AUTO_INCREMENT cho bảng `settings`
 --
 ALTER TABLE `settings`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT cho bảng `user`

@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require('../utils/mysql'); // Adjust the path as needed
 const { getUserId } = require('../utils/lib');
 const axios = require('axios');
+const { sendMessageChatBot } = require('../utils/aichatbot');
 
 router.get('/', getUserId, async (req, res) => {
     try {
@@ -165,7 +166,7 @@ router.post('/', async (req, res) => {
         orderTxt += `[ID: ${order.order_id}, Tổng tiền: ${order.totalPrice}, Thanh toán: ${order.payment}, Trạng thái: ${order.status}], `;
     });
 
-        const systemPrompt = `
+    const systemPrompt = `
 * Role Definition
 Bạn là trợ lý ảo thân thiện cho cửa hàng điện thoại KhanhHaoStore. Hãy luôn giữ phong cách:
 - Trả lời bằng HTML hợp lệ (Không cần viết đầy đủ tag đầu trang và cuối trang, chỉ cần nội dung).
@@ -274,28 +275,7 @@ TRƯỚC KHI TRẢ LỜI PHẢI:
 ${prompt ? `**Hướng dẫn Bổ sung**\n${prompt}` : ''}
 `.trim();
 
-        // Prepare the request payload for the external API
-        const payload = {
-          model:  "gemma-2-9b-it",
-          messages: [
-            { role: "system", 
-                content: systemPrompt
-             },
-            { role: "user", content: message.trim() } // Use the message sent by the user
-          ],
-          temperature: 1.0,
-          max_tokens: -1,
-          stream: false
-        };
-    
-        // Send the request to the external API using Axios
-        const response = await axios.post('http://127.0.0.1:1234/v1/chat/completions', payload, {
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-    
-        const botResponse = response.data.choices[0]?.message?.content;
+        const botResponse = await sendMessageChatBot(systemPrompt, message);
 
         if (botResponse) {
             res.json({ content: botResponse });
