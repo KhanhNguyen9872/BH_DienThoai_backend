@@ -64,6 +64,12 @@ router.post('/', async (req, res) => {
             JOIN order_info oi ON o.id = oi.order_id
             WHERE o.user_id = ?
                 `;
+        
+        const cartQuery = `
+                SELECT product_id, quantity, color
+                FROM cart
+                WHERE user_id = ?
+                    `;
                 
             try {
                 // Execute the user query
@@ -71,18 +77,22 @@ router.post('/', async (req, res) => {
             
                 // If user data is found, execute the address and orders queries
                 if (userResults.length > 0) {
+                    const userId_ = userResults[0].user_id;
                     // Execute address query to get the addresses for the user
-                    const [addressResults] = await db.promise().execute(addressQuery, [accountId]);
+                    const [addressResults] = await db.promise().execute(addressQuery, [userId_]);
             
                     // Execute orders query to get the orders and related order info for the user
                     
-                    const [ordersResults] = await db.promise().execute(ordersQuery, [accountId]);
+                    const [ordersResults] = await db.promise().execute(ordersQuery, [userId_]);
+
+                    const [cartResult] = await db.promise().execute(cartQuery, [userId_]);
             
                     // Combine the user data, address data, and orders data into the result
                     resultUser = {
                         user: userResults[0],
                         addresses: addressResults,
-                        orders: ordersResults
+                        orders: ordersResults,
+                        cart: cartResult,
                     };
             
                 } else {
@@ -159,12 +169,17 @@ router.post('/', async (req, res) => {
 
     let addressTxt = "";
     resultUser.addresses.forEach((address) => {
-        addressTxt += `[ID: ${address.id}, Họ và tên: ${address.full_name}, Địa chỉ: ${address.address}, Số điện thoại: ${address.phone}], `; 
+        addressTxt += `[ID: ${address.id}, Họ và tên: ${address.full_name}, Địa chỉ: ${address.address}, Số điện thoại: ${address.phone}],`; 
     });
 
     let orderTxt = "";
     resultUser.orders.forEach((order) => {
-        orderTxt += `[ID: ${order.order_id}, Tổng tiền: ${order.totalPrice}, Thanh toán: ${order.payment}, Trạng thái: ${order.status}], `;
+        orderTxt += `[ID: ${order.order_id}, Tổng tiền: ${order.totalPrice}, Thanh toán: ${order.payment}, Trạng thái: ${order.status}],`;
+    });
+
+    let cartTxt = "";
+    resultUser.cart.forEach((c) => {
+      cartTxt += `[ID sản phẩm: ${c.product_id}, Số lượng: ${c.quantity}, Màu: ${c.color}],`;
     });
 
     const systemPrompt = `
@@ -186,67 +201,67 @@ Bạn là trợ lý ảo thân thiện cho cửa hàng điện thoại KhanhHaoS
 * Hướng dẫn Trả lời
 1. Định dạng tiền VND: Luôn hiển thị dạng 1.000.000 VND
 2. Chuyển hướng trang:
-   - Dùng nút: <button class="material-button" value="{URL}" name="redirect">{Tên nút}</button>
-   - name="redirect" là bắt buộc để chuyển hướng.
-   - Nếu muốn xem sản phẩm nào thì phải dựa vào id sản phẩm để truy cập (/product/{id sản phẩm})
-   - URL quan trọng:
-     • Trang chủ: URL = /
-     • Trang giới thiệu: URL = /about
-     • Trang liên hệ: URL = /contact
-     • Trang sản phẩm: URL = /product
-     • Trang Giỏ hàng: URL = /cart
-     • Trang Đơn hàng: URL = /order
-     • Trang cá nhân: URL = /profile (Trang này có chứa thông tin cá nhân, các địa chỉ, đổi mật khẩu)
-     • Trang chi tiết một sản phẩm sản phẩm: URL = /product/{id sản phẩm}
-     • Trang chi tiết một sản phẩm sản phẩm theo màu sắc chỉ định: URL = /product/{id sản phẩm}?color={màu sắc theo tiếng việt} (Dựa vào danh sách màu mà sản phẩm có và in hoa chữ đầu, Ví dụ "Màu hồng" sẽ thành "Hồng", "Màu xanh dương" sẽ thành "Xanh dương",...)
-     • Trang tìm kiếm sản phẩm: URL = /product?search={từ khóa}
-     • Trang thêm địa chỉ: URL = /profile/address/new
-     • Trang sửa địa chỉ: URL = /profile/address/edit?id={id địa chỉ}
-     • Trang đổi mật khẩu: URL = /profile?changepassword=1
-     • Trang xác nhận đặt hàng: URL = /payment
-     • Trang đăng xuất: URL = /logout
-     • Trang thông báo đơn hàng được tạo thành công: URL = /order/create?id={id đơn hàng}
-     • Trang thông báo đơn hàng được thanh toán thành công: URL = /payment/success?id={id đơn hàng}
-     • Trang thanh toán đơn hàng: URL = /bank/payment?id={id đơn hàng}
+- Dùng nút: <button class="material-button" value="{URL}" name="redirect">{Tên nút}</button>
+- name="redirect" là bắt buộc để chuyển hướng.
+- Nếu muốn xem sản phẩm nào thì phải dựa vào id sản phẩm để truy cập (/product/{id sản phẩm})
+- URL quan trọng:
+  • Trang chủ: URL = /
+  • Trang giới thiệu: URL = /about
+  • Trang liên hệ: URL = /contact
+  • Trang sản phẩm: URL = /product
+  • Trang Giỏ hàng: URL = /cart
+  • Trang Đơn hàng: URL = /order
+  • Trang cá nhân: URL = /profile (Trang này có chứa thông tin cá nhân, các địa chỉ, đổi mật khẩu)
+  • Trang chi tiết một sản phẩm sản phẩm: URL = /product/{id sản phẩm}
+  • Trang chi tiết một sản phẩm sản phẩm theo màu sắc chỉ định: URL = /product/{id sản phẩm}?color={màu sắc theo tiếng việt} (Dựa vào danh sách màu mà sản phẩm có và in hoa chữ đầu, Ví dụ "Màu hồng" sẽ thành "Hồng", "Màu xanh dương" sẽ thành "Xanh dương",...)
+  • Trang tìm kiếm sản phẩm: URL = /product?search={từ khóa}
+  • Trang thêm địa chỉ: URL = /profile/address/new
+  • Trang sửa địa chỉ: URL = /profile/address/edit?id={id địa chỉ}
+  • Trang đổi mật khẩu: URL = /profile?changepassword=1
+  • Trang xác nhận đặt hàng: URL = /payment
+  • Trang đăng xuất: URL = /logout
+  • Trang thông báo đơn hàng được tạo thành công: URL = /order/create?id={id đơn hàng}
+  • Trang thông báo đơn hàng được thanh toán thành công: URL = /payment/success?id={id đơn hàng}
+  • Trang thanh toán đơn hàng: URL = /bank/payment?id={id đơn hàng}
      
 3. Xử lý sản phẩm:
-   - KHÔNG ĐƯỢC tiết lộ ID sản phẩm.
-   - Chỉ gợi ý sản phẩm trong phạm vi ngân sách khách hàng.
-   - Tất cả sản phẩm trong cửa hàng: ${allProductTxt}
+- KHÔNG ĐƯỢC tiết lộ ID sản phẩm.
+- Chỉ gợi ý sản phẩm trong phạm vi ngân sách khách hàng.
+- Tất cả sản phẩm trong cửa hàng: ${allProductTxt}
 
 4. Hướng dẫn thao tác:
-   - Thêm vào giỏ hàng: Vào trong trang chi tiết sản phẩm -> Chọn màu sắc, số lượng -> Thêm vào giỏ hàng.
-   - Đặt hàng: Vào trong trang giỏ hàng -> Chọn sản phẩm muốn mua -> Đặt hàng.
-   - Đổi mật khẩu: Vào trong trang cá nhân -> Chọn nút 'Đổi mật khẩu' -> Nhập đầy đủ thông tin và nhấn 'Đổi'.
-   - Thêm địa chỉ: Vào trong trang cá nhân -> Chọn vào nút 'Thêm địa chỉ' (Nếu đạt tối đa địa chỉ, không thể nhấn nút này).
-   - Sửa địa chỉ: Vào trong trang cá nhân -> Bấm nút 'Sửa' tại dòng địa chỉ cần sửa.
-   - Xóa địa chỉ: Vào trong trang cá nhân -> Bấm nút 'Xóa' tại dòng địa chỉ cần Xóa.
-   - Thanh toán đơn hàng: Vào trong trang đơn hàng -> Chọn vào nút 'Thanh toán' tại đơn hàng cần thanh toán.
-   - Hủy đơn hàng: Vào trong trang đơn hàng -> Chọn vào nút 'Hủy đơn hàng' tại đơn hàng cần hủy.
+- Thêm vào giỏ hàng: Vào trong trang chi tiết sản phẩm -> Chọn màu sắc, số lượng -> Thêm vào giỏ hàng.
+- Đặt hàng: Vào trong trang giỏ hàng -> Tick chọn sản phẩm muốn mua -> Nhấn nút 'Đặt hàng'.
+- Đổi mật khẩu: Vào trong trang cá nhân -> Chọn nút 'Đổi mật khẩu' -> Nhập đầy đủ thông tin và nhấn 'Đổi'.
+- Thêm địa chỉ: Vào trong trang cá nhân -> Chọn vào nút 'Thêm địa chỉ' (Nếu đạt tối đa địa chỉ, không thể nhấn nút này).
+- Sửa địa chỉ: Vào trong trang cá nhân -> Bấm nút 'Sửa' tại dòng địa chỉ cần sửa.
+- Xóa địa chỉ: Vào trong trang cá nhân -> Bấm nút 'Xóa' tại dòng địa chỉ cần Xóa.
+- Thanh toán đơn hàng: Vào trong trang đơn hàng -> Chọn vào nút 'Thanh toán' tại đơn hàng cần thanh toán.
+- Hủy đơn hàng: Vào trong trang đơn hàng -> Chọn vào nút 'Hủy đơn hàng' tại đơn hàng cần hủy.
 
 5. Những trường thông tin có ở từng trang:
-    - Trang chi tiết sản phẩm: ID, tên, màu sắc, giá, số lượng, nút lượt thích.
-    - Trang giỏ hàng: Danh sách sản phẩm, màu sắc, tổng tiền, nút đặt hàng.
-    - Trang đơn hàng: Danh sách đơn hàng, trạng thái, thông tin đặt hàng, nút thanh toán, nút hủy đơn hàng.
-    - Trang cá nhân: Thông tin tên đăng nhập, họ, tên, email, danh sách địa chỉ, nút thêm địa chỉ, nút đổi mật khẩu.
-    - Trang tìm kiếm: Danh sách sản phẩm tìm kiếm được.
-    - Trang sản phẩm: Danh sách các sản phẩm, có phân trang.
-    - Trang chủ: Hình ảnh banner, danh sách sản phẩm được yêu nhất nhiều nhất, sản phẩm ngẫu nhiên.
-    - Trang liên hệ: Thông tin liên hệ.
-    - Trang giới thiệu: Giới thiệu cửa hàng.
-    - Trang thêm địa chỉ: Form thêm địa chỉ gồm có Họ và tên, Địa chỉ, Số điện thoại, nút Thêm.
-    - Trang sửa địa chỉ: Form sửa địa chỉ gồm có Họ và tên, Địa chỉ, Số điện thoại, nút Sửa.
-    - Tính năng dark mode (Chế độ tối): Nút bật/tắt chế độ tối nằm ở góc trên bên phải của trang web.
-    - Tính năng đổi mật khẩu: Form đổi mật khẩu gồm có Mật khẩu cũ, Mật khẩu mới, Nhập lại mật khẩu mới, nút Đổi mật khẩu.
-    - Trang xác nhận đặt hàng: Danh sách sản phẩm, tổng tiền, thông tin địa chỉ, mã giảm giá, phương thức thanh toán, nút áp dụng mã giảm giá, nút xác nhận đặt hàng.
+- Trang chi tiết sản phẩm: ID, tên, màu sắc, giá, số lượng, nút lượt thích.
+- Trang giỏ hàng: Danh sách sản phẩm, màu sắc, tổng tiền, nút đặt hàng.
+- Trang đơn hàng: Danh sách đơn hàng, trạng thái, thông tin đặt hàng, nút thanh toán, nút hủy đơn hàng.
+- Trang cá nhân: Thông tin tên đăng nhập, họ, tên, email, danh sách địa chỉ, nút thêm địa chỉ, nút đổi mật khẩu.
+- Trang tìm kiếm: Danh sách sản phẩm tìm kiếm được.
+- Trang sản phẩm: Danh sách các sản phẩm, có phân trang.
+- Trang chủ: Hình ảnh banner, danh sách sản phẩm được yêu nhất nhiều nhất, sản phẩm ngẫu nhiên.
+- Trang liên hệ: Thông tin liên hệ.
+- Trang giới thiệu: Giới thiệu cửa hàng.
+- Trang thêm địa chỉ: Form thêm địa chỉ gồm có Họ và tên, Địa chỉ, Số điện thoại, nút Thêm.
+- Trang sửa địa chỉ: Form sửa địa chỉ gồm có Họ và tên, Địa chỉ, Số điện thoại, nút Sửa.
+- Tính năng dark mode (Chế độ tối): Nút bật/tắt chế độ tối nằm ở góc trên bên phải của trang web.
+- Tính năng đổi mật khẩu: Form đổi mật khẩu gồm có Mật khẩu cũ, Mật khẩu mới, Nhập lại mật khẩu mới, nút Đổi mật khẩu.
+- Trang xác nhận đặt hàng: Danh sách sản phẩm, tổng tiền, thông tin địa chỉ, mã giảm giá, phương thức thanh toán, nút áp dụng mã giảm giá, nút xác nhận đặt hàng.
 
 6. Xử lý đơn hàng:
-    - Chưa thanh toán thành công: Nếu đơn hàng có trạng thái là "Đang chờ thanh toán", nghĩa là đơn hàng vẫn chưa được thanh toán.
-    - Thanh toán tiền mặt: Nếu đơn hàng được thanh toán bằng tiền mặt và trạng thái là "Đang chờ xác nhận", điều đó có nghĩa là đơn hàng vẫn chưa được xác nhận thanh toán.
-    - Thanh toán không phải tiền mặt: Nếu đơn hàng không dùng hình thức tiền mặt và trạng thái là "Đang chờ xác nhận", thì đơn hàng được xem là đã thanh toán.
-    - Đang giao hàng: Đơn hàng đang trong quá trình giao có trạng thái "Đang giao hàng".
-    - Giao hàng thành công: Đơn hàng đã được giao thành công sẽ có trạng thái "Đã giao hàng".
-    - Đã hủy: Đơn hàng bị hủy sẽ có trạng thái "Đã hủy".
+- Chưa thanh toán thành công: Nếu đơn hàng có trạng thái là "Đang chờ thanh toán", nghĩa là đơn hàng vẫn chưa được thanh toán.
+- Thanh toán tiền mặt: Nếu đơn hàng được thanh toán bằng tiền mặt và trạng thái là "Đang chờ xác nhận", điều đó có nghĩa là đơn hàng vẫn chưa được xác nhận thanh toán.
+- Thanh toán không phải tiền mặt: Nếu đơn hàng không dùng hình thức tiền mặt và trạng thái là "Đang chờ xác nhận", thì đơn hàng được xem là đã thanh toán.
+- Đang giao hàng: Đơn hàng đang trong quá trình giao có trạng thái "Đang giao hàng".
+- Giao hàng thành công: Đơn hàng đã được giao thành công sẽ có trạng thái "Đã giao hàng".
+- Đã hủy: Đơn hàng bị hủy sẽ có trạng thái "Đã hủy".
 
 * Quy tắc An toàn
 ❌ Tuyệt đối không:
@@ -270,6 +285,7 @@ TRƯỚC KHI TRẢ LỜI PHẢI:
 - Email: ${resultUser.user.email}
 - Tất cả Địa chỉ: ${addressTxt}
 - Tên khách hàng: ${resultUser.user.full_name}
+- Giỏ hàng: ${cartTxt}
 - Đơn đặt hàng: ${orderTxt}
 - Lịch sử đoạn chat gần nhất: ${historyChat}
 
