@@ -19,15 +19,15 @@ app.use(cors());
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, '../public')));
 
-const products = require('./router/products');
-const accounts = require('./router/accounts');
-const users = require('./router/users');
-const address = require('./router/address');
-const carts = require('./router/carts');
-const vouchers = require('./router/vouchers');
-const orders = require('./router/orders');
-const chatbot = require('./router/chatbot');
-const img = require('./router/img');
+const products = require('./routers/productRoute');
+const accounts = require('./routers/accountRoute');
+const users = require('./routers/userRoute');
+const address = require('./routers/addressRoute');
+const carts = require('./routers/cartRoute');
+const vouchers = require('./routers/voucherRoute');
+const orders = require('./routers/orderRoute');
+const chatbot = require('./routers/chatbotRoute');
+const img = require('./routers/imgRoute');
 
 // Example route
 app.use('/products', products);
