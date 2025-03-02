@@ -27,6 +27,7 @@ const carts = require('./router/carts');
 const vouchers = require('./router/vouchers');
 const orders = require('./router/orders');
 const chatbot = require('./router/chatbot');
+const img = require('./router/img');
 
 // Example route
 app.use('/products', products);
@@ -55,6 +56,7 @@ app.use('/chatbot', verifyToken, async (req, res, next) => {
     return res.status(500).json({ message: 'Internal server error.' });
   }
 }, chatbot);
+app.use('/img', img);
 
 app.get('/status', async (req, res) => {
   try {

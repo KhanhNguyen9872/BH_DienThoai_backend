@@ -28,6 +28,7 @@ router.get('/', getUserId, async (req, res) => {
     }
   });
 
+
 router.post('/', async (req, res) => {
     try {
         // Get the message from the request body
