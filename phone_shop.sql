@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 02, 2025 lúc 01:05 PM
+-- Thời gian đã tạo: Th3 02, 2025 lúc 04:14 PM
 -- Phiên bản máy phục vụ: 8.0.40
 -- Phiên bản PHP: 8.2.12
 
@@ -130,6 +130,7 @@ CREATE TABLE `cache_locks` (
 --
 
 CREATE TABLE `cart` (
+  `id` int NOT NULL,
   `user_id` int NOT NULL,
   `product_id` int NOT NULL,
   `quantity` int NOT NULL,
@@ -140,12 +141,12 @@ CREATE TABLE `cart` (
 -- Đang đổ dữ liệu cho bảng `cart`
 --
 
-INSERT INTO `cart` (`user_id`, `product_id`, `quantity`, `color`) VALUES
-(3, 1, 3, 'Đen'),
-(3, 1, 2, 'Trắng'),
-(3, 2, 1, 'Trắng'),
-(5, 1, 1, 'Đen'),
-(1, 1, 1, 'Đen');
+INSERT INTO `cart` (`id`, `user_id`, `product_id`, `quantity`, `color`) VALUES
+(1, 3, 1, 3, 'Đen'),
+(2, 3, 1, 2, 'Trắng'),
+(3, 3, 2, 1, 'Trắng'),
+(4, 5, 1, 1, 'Đen'),
+(5, 1, 1, 1, 'Đen');
 
 -- --------------------------------------------------------
 
@@ -235,9 +236,7 @@ INSERT INTO `history_chatbot` (`id`, `user_id`, `message`, `isBot`, `time`, `upd
 (229, 3, 'Iphone 12 có những màu gì?', 0, '2025-02-27 16:37:31', '2025-03-02 17:47:30'),
 (230, 3, 'iPhone 12 có các màu sau: Màu Đen, Màu Xanh Dương, Màu Trắng. \n\n(URL: <a href=\"/product/2\">iPhone 12</a>) \n', 1, '2025-02-27 16:37:35', '2025-03-02 17:47:30'),
 (231, 3, 'Hãy chuyển hướng tôi sang trang Iphone 12', 0, '2025-02-27 16:37:51', '2025-03-02 17:47:30'),
-(232, 3, '(URL: <a href=\"/product/2\">iPhone 12</a>) \n', 1, '2025-02-27 16:37:54', '2025-03-02 17:47:30'),
-(974, 1, 'Xin chào', 0, '2025-03-02 18:43:08', '2025-03-02 18:43:08'),
-(975, 1, '<div>\n    Xin chào 👋 Khánh Nguyễn!\n    <br>\n    Chào mừng bạn đến với KhanhHaoStore! 🥳 Rất vui được hỗ trợ bạn.\n    <br>\n    Bạn có muốn xem các sản phẩm mới nhất của chúng tôi không? Hoặc có thể bạn đang tìm kiếm một sản phẩm cụ thể nào đó? 🤔 Hãy cho tôi biết nhé!\n    <br>\n    <button class=\"material-button\" value=\"/\" name=\"redirect\">Xem sản phẩm</button>\n</div>\n', 1, '2025-03-02 18:43:10', '2025-03-02 18:43:10');
+(232, 3, '(URL: <a href=\"/product/2\">iPhone 12</a>) \n', 1, '2025-02-27 16:37:54', '2025-03-02 17:47:30');
 
 -- --------------------------------------------------------
 
@@ -328,17 +327,19 @@ INSERT INTO `notifications` (`id`, `text`, `url`, `time`, `isRead`, `created_at`
 
 CREATE TABLE `orders` (
   `id` int NOT NULL,
-  `user_id` int NOT NULL
+  `user_id` int NOT NULL,
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `orders`
 --
 
-INSERT INTO `orders` (`id`, `user_id`) VALUES
-(14, 5),
-(16, 5),
-(17, 5);
+INSERT INTO `orders` (`id`, `user_id`, `created_at`, `updated_at`) VALUES
+(14, 5, '2025-03-02 22:08:22', '2025-03-02 22:08:22'),
+(16, 5, '2025-03-02 22:08:22', '2025-03-02 22:08:22'),
+(17, 5, '2025-03-02 22:08:22', '2025-03-02 22:08:22');
 
 -- --------------------------------------------------------
 
@@ -429,7 +430,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('s0CHjX6XWphN5NGnnpTEWQg3rT5ysVblJoKVhC0N', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiRmVJemd6MWFxTXNsYUNEMmdxWWI0MnBhRmd6NWJ5a3h1b2hpdjc3eCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9hbmFseXRpY3MiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjk6ImZ1bGxfbmFtZSI7czoyMDoiTmd1eeG7hW4gVsSDbiBLaMOhbmgiO3M6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1740915930);
+('SmjqnajX1MX6dF5pziApwP570AP755t68ZH1Vk05', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoidHF3dTd2SHBsdzk3S0VIaUtON09PdVhFcVozdXpMdlB6UnRneTBKUyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9sb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1740928454);
 
 -- --------------------------------------------------------
 
@@ -570,6 +571,7 @@ ALTER TABLE `cache_locks`
 -- Chỉ mục cho bảng `cart`
 --
 ALTER TABLE `cart`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
 
 --
@@ -699,6 +701,12 @@ ALTER TABLE `admin`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
+-- AUTO_INCREMENT cho bảng `cart`
+--
+ALTER TABLE `cart`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT cho bảng `colors`
 --
 ALTER TABLE `colors`
@@ -714,7 +722,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT cho bảng `history_chatbot`
 --
 ALTER TABLE `history_chatbot`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=976;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000;
 
 --
 -- AUTO_INCREMENT cho bảng `jobs`
