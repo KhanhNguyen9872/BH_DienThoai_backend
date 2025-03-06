@@ -33,7 +33,7 @@ router.post('/forgot', (req, res) => {
 });
 
 // PUT /password (change password)
-router.put('/password', verifyToken, (req, res) => {
+router.patch('/password', verifyToken, (req, res) => {
   return accountController.changePassword(req, res);
 });
 

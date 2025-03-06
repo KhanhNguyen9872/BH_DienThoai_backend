@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 02, 2025 lúc 04:14 PM
+-- Thời gian đã tạo: Th3 06, 2025 lúc 06:40 AM
 -- Phiên bản máy phục vụ: 8.0.40
 -- Phiên bản PHP: 8.2.12
 
@@ -42,11 +42,13 @@ CREATE TABLE `account` (
 --
 
 INSERT INTO `account` (`id`, `username`, `password`, `lock_acc`, `user_id`, `created_at`, `updated_at`) VALUES
-(1, 'a', '0b4e7a0e5fe84ad35fb5f95b9ceeac79', 0, 1, '2025-03-02 16:15:43', '2025-03-02 09:15:45'),
+(1, 'a', '46c9a651ec34e9118b64e72ae13b067f', 0, 1, '2025-03-02 16:15:43', '2025-03-02 09:15:45'),
 (2, 'd', 'c4ca4238a0b923820dcc509a6f75849b', 0, 2, '2025-03-02 16:15:43', '2025-03-02 16:15:43'),
 (3, 'b', '92eb5ffee6ae2fec3ad71c777531578f', 0, 3, '2025-03-02 16:15:43', '2025-03-02 16:15:43'),
 (4, 'c', '4a8a08f09d37b73795649038408b5f33', 0, 4, '2025-03-02 16:15:43', '2025-03-02 16:15:43'),
-(5, 'khanh', 'c4ca4238a0b923820dcc509a6f75849b', 0, 5, '2025-03-02 16:15:43', '2025-03-02 16:15:43');
+(5, 'khanh', 'c4ca4238a0b923820dcc509a6f75849b', 0, 5, '2025-03-02 16:15:43', '2025-03-02 16:15:43'),
+(10, 'y', '415290769594460e2e485922904f345d', 0, 16, '2025-03-06 12:27:02', '2025-03-06 12:27:02'),
+(11, 'zz', '25ed1bcb423b0b7200f485fc5ff71c8e', 0, 18, '2025-03-06 12:31:25', '2025-03-06 12:31:25');
 
 -- --------------------------------------------------------
 
@@ -236,7 +238,13 @@ INSERT INTO `history_chatbot` (`id`, `user_id`, `message`, `isBot`, `time`, `upd
 (229, 3, 'Iphone 12 có những màu gì?', 0, '2025-02-27 16:37:31', '2025-03-02 17:47:30'),
 (230, 3, 'iPhone 12 có các màu sau: Màu Đen, Màu Xanh Dương, Màu Trắng. \n\n(URL: <a href=\"/product/2\">iPhone 12</a>) \n', 1, '2025-02-27 16:37:35', '2025-03-02 17:47:30'),
 (231, 3, 'Hãy chuyển hướng tôi sang trang Iphone 12', 0, '2025-02-27 16:37:51', '2025-03-02 17:47:30'),
-(232, 3, '(URL: <a href=\"/product/2\">iPhone 12</a>) \n', 1, '2025-02-27 16:37:54', '2025-03-02 17:47:30');
+(232, 3, '(URL: <a href=\"/product/2\">iPhone 12</a>) \n', 1, '2025-02-27 16:37:54', '2025-03-02 17:47:30'),
+(1000, 1, 'Hello', 0, '2025-03-02 23:42:46', '2025-03-02 23:42:46'),
+(1001, 1, '```html\n<div>\n  Xin chào Khánh Nguyễn! 👋 Rất vui được hỗ trợ bạn tại KhanhHaoStore. 💖\n  <br>\n  Bạn có muốn xem các sản phẩm đang được yêu thích nhất của cửa hàng không? 🥰 Hoặc có thể bạn muốn tìm kiếm một sản phẩm cụ thể nào đó? 🤔\n  <br>\n  Để mình gợi ý nhé! 😉\n  <ul>\n    <li>\n      Để xem các sản phẩm đang được yêu thích nhất, bạn có thể truy cập trang chủ bằng cách nhấn vào nút bên dưới:\n      <br>\n      <button class=\"material-button\" value=\"/\" name=\"redirect\">Trang chủ</button>\n    </li>\n    <li>\n      Nếu bạn muốn tìm kiếm một sản phẩm cụ thể, bạn có thể nhập tên sản phẩm vào ô tìm kiếm ở đầu trang nhé! 🔍\n    </li>\n  </ul>\n  <br>\n  Bạn cần hỗ trợ gì thêm không ạ? 😊\n</div>\n```', 1, '2025-03-02 23:42:50', '2025-03-02 23:42:50'),
+(1002, 1, 'can you speak english?', 0, '2025-03-02 23:43:01', '2025-03-02 23:43:01'),
+(1003, 1, '```html\n<div>\n  Hello Khánh Nguyễn! 👋 I\'m so glad to assist you at KhanhHaoStore. 💖\n  <br>\n  Unfortunately, I am currently only able to communicate in Vietnamese. 😔 I hope you don\'t mind! 🙏\n  <br>\n  Is there anything I can help you with in Vietnamese? 😊\n  <br>\n  Maybe you would like to see the most popular products in our store? 🥰 Or perhaps you are looking for a specific product? 🤔\n  <br>\n  Let me suggest some options! 😉\n  <ul>\n    <li>\n      To see the most popular products, you can visit the homepage by clicking the button below:\n      <br>\n      <button class=\"material-button\" value=\"/\" name=\"redirect\">Trang chủ</button>\n    </li>\n    <li>\n      If you want to search for a specific product, you can enter the product name in the search box at the top of the page! 🔍\n    </li>\n  </ul>\n  <br>\n  Do you need any further assistance? 😊\n</div>\n```', 1, '2025-03-02 23:43:03', '2025-03-02 23:43:03'),
+(1004, 18, 'Hello World!', 0, '2025-03-06 12:36:28', '2025-03-06 12:36:28'),
+(1005, 18, 'Chào bạn a b! 😊 Rất vui khi được hỗ trợ bạn tại KhanhHaoStore.\n\nBạn đang cần tìm gì ạ? 🤔 Mình có thể giúp bạn tìm kiếm sản phẩm 📱, xem thông tin về cửa hàng 🏢, hoặc hỗ trợ bạn với tài khoản cá nhân của bạn 👤.\n\nHãy cho mình biết bạn muốn gì nhé! 😉\n', 1, '2025-03-06 12:36:31', '2025-03-06 12:36:31');
 
 -- --------------------------------------------------------
 
@@ -402,7 +410,7 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `name`, `description`, `favorite`, `color`, `created_at`, `updated_at`) VALUES
-(1, 'Google Pixel 3', 'a pixel 3 phone', '[1, 2, 3, 5]', '[{\"img\": \"/img/google-pixel-3-black.jpg\", \"name\": \"Đen\", \"money\": \"3000000\", \"quantity\": 2, \"moneyDiscount\": \"2700000\"}, {\"img\": \"/img/google-pixel-3-white.jpg\", \"name\": \"Trắng\", \"money\": \"3100000\", \"quantity\": \"2\", \"moneyDiscount\": \"2900000\"}, {\"img\": \"/img/google-pixel-3-pink.jpg\", \"name\": \"Hồng\", \"money\": \"3200000\", \"quantity\": \"0\"}]', '2025-02-28 14:47:44', '2025-03-01 19:30:37'),
+(1, 'Google Pixel 3', 'a pixel 3 phone', '[2, 3, 5, 1, 16]', '[{\"img\": \"/img/google-pixel-3-black.jpg\", \"name\": \"Đen\", \"money\": \"3000000\", \"quantity\": 2, \"moneyDiscount\": \"2700000\"}, {\"img\": \"/img/google-pixel-3-white.jpg\", \"name\": \"Trắng\", \"money\": \"3100000\", \"quantity\": \"2\", \"moneyDiscount\": \"2900000\"}, {\"img\": \"/img/google-pixel-3-pink.jpg\", \"name\": \"Hồng\", \"money\": \"3200000\", \"quantity\": \"0\"}]', '2025-02-28 14:47:44', '2025-03-01 19:30:37'),
 (2, 'iPhone 12', 'latest iPhone model a', '[3]', '[{\"img\": \"/img/ZePnBJgWxoKBP3NuxpF1bDbSbl0Qar4WffMwHG2B.webp\", \"name\": \"Đen\", \"money\": \"25000000\", \"quantity\": \"2\", \"moneyDiscount\": \"24000000\"}, {\"img\": \"/img/qmLN6shAnAijEyYSwM2Ao4OTd50fKRMRbFjYUy9u.jpg\", \"name\": \"Xanh dương\", \"money\": \"26000000\", \"quantity\": \"12\"}, {\"img\": \"/img/5MZ2hai0gMQBDVsmmQgeQvSRmkqXSTVgn9aVRggT.webp\", \"name\": \"Trắng\", \"money\": \"27000000\", \"quantity\": \"3\"}]', '2025-02-28 14:47:44', '2025-02-28 11:49:51'),
 (3, 'Xiaomi Mi 11 Lite 5G', 'mid-range phone', '[]', '[{\"img\": \"/img/egLl6co6KQGzg7wIZ3c62cqpBNMglOHQlVsZiNcg.jpg\", \"name\": \"Đen\", \"money\": \"14000000\", \"quantity\": \"3\"}, {\"img\": \"/img/g7edeDr53GRPIq1G7VPLZsxZkE9D9rDHVzHJvhai.webp\", \"name\": \"Xanh dương\", \"money\": \"20000000\", \"quantity\": \"5\", \"moneyDiscount\": \"19000000\"}, {\"img\": \"/img/hUnMqfnsNzbOWgjiUistiOquFEw63sV5OeNKvgfV.png\", \"name\": \"Vàng\", \"money\": \"20000000\", \"quantity\": \"7\"}, {\"img\": \"/img/04rCezlCnOv7jhmAsQKRvlj9XQwIvsc5Nv8neBM3.jpg\", \"name\": \"Hồng\", \"money\": \"14000000\", \"quantity\": \"1\"}]', '2025-02-28 09:10:06', '2025-02-28 11:52:32'),
 (4, 'Samsung Galaxy S21', NULL, '[]', '[{\"img\": \"/img/c8TKZA6O2IiUKbd4qSQoKaUu2CDhNpCyUBgfeUY5.jpg\", \"name\": \"Hồng\", \"money\": \"22000000\", \"quantity\": \"4\", \"moneyDiscount\": \"21000000\"}, {\"img\": \"/img/h9Lt8DZ2NtW7i9TxFEHWCeGTqfjtFcAU1MQJNmK3.webp\", \"name\": \"Xám\", \"money\": \"22000000\", \"quantity\": \"3\"}]', '2025-02-28 09:24:46', '2025-02-28 11:59:13'),
@@ -430,7 +438,12 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('SmjqnajX1MX6dF5pziApwP570AP755t68ZH1Vk05', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoidHF3dTd2SHBsdzk3S0VIaUtON09PdVhFcVozdXpMdlB6UnRneTBKUyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9sb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1740928454);
+('ExOPJ54PYw48XMwr1Qd0ZwjTYbmQm37ROpJVsSh2', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiMGoxbXBwWWk3dlMydGJmZldDMTBNanJLZkRYTG1kZEsyZmlTR1NDSCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NDA6Imh0dHA6Ly9hZG1pbi5raGFuaGhhb3N0b3JlLmNvbS9kYXNoYm9hcmQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjk6ImZ1bGxfbmFtZSI7czoyMDoiTmd1eeG7hW4gVsSDbiBLaMOhbmgiO3M6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1740987411),
+('F3GlRwvbWbZDVdxoe2oyXspK1hktwtmIiFznip03', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiU3loa1JFeDY2VkR2d05wRDN0VG1XMHZLenR5bU1hZnVYdkR6ZXBOSCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzE6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9kYXNoYm9hcmQiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjM6InVybCI7YToxOntzOjg6ImludGVuZGVkIjtzOjMxOiJodHRwOi8vbG9jYWxob3N0OjgwMDAvZGFzaGJvYXJkIjt9fQ==', 1740987191),
+('JOu0xisnucsBYUn3e6dAvl4YJp9dlWJiSMXVqAYq', 1, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTo2OntzOjY6Il90b2tlbiI7czo0MDoiMUxjN0dzNjBEZlg1SU5ieVlGNHB1eFA2OHZNY25BZ25wQWZyRm9MNSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzA6Imh0dHA6Ly9hZG1pbi5raGFuaGhhb3N0b3JlLmNvbSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MzoidXJsIjthOjA6e31zOjk6ImZ1bGxfbmFtZSI7czoyMDoiTmd1eeG7hW4gVsSDbiBLaMOhbmgiO3M6NTA6ImxvZ2luX3dlYl81OWJhMzZhZGRjMmIyZjk0MDE1ODBmMDE0YzdmNThlYTRlMzA5ODlkIjtpOjE7fQ==', 1740987284),
+('JYtBNUv5rSSWP95F4JTjHLbiOfCIkbHp7Jqwr9yI', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiYTB6RVQ0cURBd2VGSHRJZDZ4RHBsNnd6SXQwMEpLaFFGbDVZY1RVWSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzA6Imh0dHA6Ly9hZG1pbi5raGFuaGhhb3N0b3JlLmNvbSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1740987442),
+('PO2NotSvYoCF7g1FHoyXgG7VNN9UgbcnvaIDdzzB', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoibWNSNk82a1lpTXlIQTFXOExjSjd5ZUxuRU1ITEdDOG9NeTRidkJFYSI7czozOiJ1cmwiO2E6MTp7czo4OiJpbnRlbmRlZCI7czo0MDoiaHR0cDovL2FkbWluLmtoYW5oaGFvc3RvcmUuY29tL2Rhc2hib2FyZCI7fXM6OToiX3ByZXZpb3VzIjthOjE6e3M6MzoidXJsIjtzOjM2OiJodHRwOi8vYWRtaW4ua2hhbmhoYW9zdG9yZS5jb20vbG9naW4iO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1740986873),
+('vMmeCwPGeq9Q2ETdcppWnPViAlRoYDmipPYOmFb0', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiYVNTU09YRzU0MXZ2V0VNS3JwR29KVkRXUnA4ckR2ZHVqd0JEdjlyQyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MzA6Imh0dHA6Ly9hZG1pbi5raGFuaGhhb3N0b3JlLmNvbSI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fX0=', 1740986426);
 
 -- --------------------------------------------------------
 
@@ -486,7 +499,9 @@ INSERT INTO `user` (`id`, `first_name`, `last_name`, `email`, `created_at`, `upd
 (2, 'a', 'b', 'c@gmail.com', '2025-03-02 00:41:51', '2025-03-02 00:41:51'),
 (3, 'b', 'b', 'b@gmail.com', '2025-03-02 00:41:51', '2025-03-02 00:41:51'),
 (4, 'c', 'c', 'cura.t.o.r.cvn@gmail.com', '2025-03-02 00:41:51', '2025-03-02 00:41:51'),
-(5, 'Khánh', 'Nguyễn', 'khanhnguyen@gmail.com', '2025-03-02 00:41:51', '2025-03-02 00:41:51');
+(5, 'Khánh', 'Nguyễn', 'khanhnguyen@gmail.com', '2025-03-02 00:41:51', '2025-03-02 00:41:51'),
+(16, 'a', 'b', 'y@gmail.com', '2025-03-06 12:27:02', '2025-03-06 12:27:02'),
+(18, 'a', 'b', 'zz@gmail.com', '2025-03-06 12:31:25', '2025-03-06 12:31:25');
 
 -- --------------------------------------------------------
 
@@ -540,6 +555,7 @@ INSERT INTO `voucher` (`id`, `code`, `discount`, `count`, `limit_user`, `user_id
 --
 ALTER TABLE `account`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`),
   ADD KEY `user_id` (`user_id`);
 
 --
@@ -686,7 +702,7 @@ ALTER TABLE `voucher`
 -- AUTO_INCREMENT cho bảng `account`
 --
 ALTER TABLE `account`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT cho bảng `address`
@@ -722,7 +738,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT cho bảng `history_chatbot`
 --
 ALTER TABLE `history_chatbot`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1000;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1006;
 
 --
 -- AUTO_INCREMENT cho bảng `jobs`
@@ -770,7 +786,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT cho bảng `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT cho bảng `users`

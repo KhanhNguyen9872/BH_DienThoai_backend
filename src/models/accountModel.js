@@ -15,7 +15,7 @@ async function findAccountByCredentials(username, hashedPassword) {
 /**
  * Create user, account, and address records in a single transaction.
  */
-async function createUserAccountTransaction({ username, password, email, firstName, lastName, lock, information }) {
+async function createUserAccountTransaction({ username, hashedPassword, email, firstName, lastName, lock, information }) {
   const promiseDb = db.promise();
   try {
     await promiseDb.beginTransaction();
@@ -28,7 +28,7 @@ async function createUserAccountTransaction({ username, password, email, firstNa
 
     // Insert into account table
     const accountQuery = 'INSERT INTO account (username, password, lock_acc, user_id) VALUES (?, ?, ?, ?)';
-    const accountValues = [username, password, lock, userId];
+    const accountValues = [username, hashedPassword, lock, userId];
     await promiseDb.query(accountQuery, accountValues);
 
     // Insert into address table (if any)
@@ -42,7 +42,7 @@ async function createUserAccountTransaction({ username, password, email, firstNa
     }
 
     await promiseDb.commit();
-    return { message: 'User, account, and address data inserted successfully' };
+    return { message: 'User created successfully' };
   } catch (error) {
     await promiseDb.rollback();
     throw error;
@@ -84,7 +84,7 @@ async function findAccountById(accountId) {
  * Update password by accountId (based on user_id).
  */
 async function updatePasswordByAccountId(accountId, hashedPassword) {
-  const query = 'UPDATE account SET password = ? WHERE user_id = ?';
+  const query = 'UPDATE account SET password = ? WHERE id = ?';
   await db.promise().query(query, [hashedPassword, accountId]);
 }
 

@@ -52,9 +52,10 @@ class AccountController {
       }
 
       // Perform transaction in the model
+      let hashedPassword = md5(password);
       const result = await AccountModel.createUserAccountTransaction({
         username,
-        password,
+        hashedPassword,
         email,
         firstName,
         lastName,
@@ -65,7 +66,7 @@ class AccountController {
       return res.status(201).json(result);
     } catch (error) {
       console.error(error);
-      return res.status(500).json({ error: 'Something went wrong' });
+      return res.status(500).json({ error: 'username or email is already registered!' });
     }
   }
 
@@ -90,8 +91,8 @@ class AccountController {
       const hashedPassword = md5(newPassword);
 
       // Update the password in DB
-      const userId = rows[0].id;
-      await AccountModel.updatePasswordByUserId(userId, hashedPassword);
+      const accountId = rows[0].id;
+      await AccountModel.updatePasswordByAccountId(accountId, hashedPassword);
 
       return res.status(200).json({
         message: 'Password reset successful',
@@ -122,7 +123,7 @@ class AccountController {
       }
 
       const storedPassword = rows[0].password;
-      if (md5(oldPassword) !== storedPassword) {
+      if (md5(oldPassword) != storedPassword) {
         return res.status(401).json({ error: 'Wrong password' });
       }
 
