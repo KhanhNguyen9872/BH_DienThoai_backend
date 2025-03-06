@@ -27,6 +27,14 @@ class CartController {
             const userId = req.user.userId;
             const { productId, quantity, color } = req.body;
 
+            if (!productId || !quantity || !color) {
+                return res.status(400).json({ message: "Missing field required" })
+            }
+
+            if (quantity < 1) {
+                return res.status(400).json({ message: "quantity must > 0" })
+            }
+
             await CartModel.addToCart(userId, productId, quantity, color);
 
             return res.status(201).json({ message: 'Product added to cart successfully' });
@@ -44,6 +52,10 @@ class CartController {
             const userId = req.user.userId;
             const { productId } = req.params;
             const { color } = req.body; // color is in the request body
+
+            if (!productId || !color) {
+                return res.status(400).json({ message: "Missing field required" })
+            }
 
             await CartModel.removeFromCart(userId, productId, color);
 

@@ -160,12 +160,12 @@
 							"urlencoded": [
 								{
 									"key": "username",
-									"value": "zz",
+									"value": "a",
 									"type": "text"
 								},
 								{
 									"key": "password",
-									"value": "zz",
+									"value": "khanh",
 									"type": "text"
 								}
 							]
@@ -278,46 +278,6 @@
 						}
 					},
 					"response": []
-				},
-				{
-					"name": "Get info user",
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "accessToken",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYSIsImlhdCI6MTc0MDAzNzIzNiwiZXhwIjoxNzQwMDgwNDM2fQ.JYdfFitM-sPK9T0CFVJOqvMCy8oIDARU-dpHFU-DXrc",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{base_url}}/user",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"user"
-							]
-						}
-					},
-					"response": []
 				}
 			]
 		},
@@ -400,6 +360,43 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get history message Copy",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "accessToken",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYSIsImlhdCI6MTc0MDAzNzIzNiwiZXhwIjoxNzQwMDgwNDM2fQ.JYdfFitM-sPK9T0CFVJOqvMCy8oIDARU-dpHFU-DXrc",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/chatbot",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chatbot"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -445,6 +442,210 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Add new address",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set(\"addressId\", pm.response.json().address.id)"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "fullName",
+									"value": "Nguyen Van Khanh",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "HCM",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "0123456789",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/address",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"address"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get a address",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "accessToken",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYSIsImlhdCI6MTc0MDAzNzIzNiwiZXhwIjoxNzQwMDgwNDM2fQ.JYdfFitM-sPK9T0CFVJOqvMCy8oIDARU-dpHFU-DXrc",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/address/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"address",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{addressId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update a address",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "fullName",
+									"value": "Nguyen Van A",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "Ha Noi",
+									"type": "text"
+								},
+								{
+									"key": "phone",
+									"value": "0987654321",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/address/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"address",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{addressId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete a address",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "accessToken",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYSIsImlhdCI6MTc0MDAzNzIzNiwiZXhwIjoxNzQwMDgwNDM2fQ.JYdfFitM-sPK9T0CFVJOqvMCy8oIDARU-dpHFU-DXrc",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/address/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"address",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{addressId}}"
+								}
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -452,7 +653,7 @@
 			"name": "[/carts]",
 			"item": [
 				{
-					"name": "Get all cart",
+					"name": "Get all items in cart",
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -486,6 +687,157 @@
 							],
 							"path": [
 								"carts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add product to cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "productId",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "0",
+									"type": "text"
+								},
+								{
+									"key": "color",
+									"value": "Đen",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/carts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"carts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update product in cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "productId",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "color",
+									"value": "Đen",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/carts/:productId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"carts",
+								":productId"
+							],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete product from cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "productId",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "color",
+									"value": "Đen",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/carts/:productId",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"carts",
+								":productId"
+							],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "1"
+								}
 							]
 						}
 					},
@@ -531,6 +883,228 @@
 							],
 							"path": [
 								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get info a order",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{orderId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create a order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"orderId\", pm.response.json().orderId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"payment\": \"nganhang\",\r\n  \"address\": 18,\r\n  \"products\": [\r\n    {\r\n      \"id\": 1,\r\n      \"color\": \"Đen\",\r\n      \"quantity\": 2\r\n    }\r\n  ],\r\n  \"voucherCode\": \"KHANHSTORE10\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/orders",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Success paid",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "payment",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "products",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "voucherCode",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/:id/success",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								":id",
+								"success"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{orderId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel a order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "payment",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "status",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "address",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "products",
+									"value": "",
+									"type": "text"
+								},
+								{
+									"key": "voucherCode",
+									"value": "",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/orders/:id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"orders",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "{{orderId}}"
+								}
 							]
 						}
 					},
@@ -583,6 +1157,151 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "[/users]",
+			"item": [
+				{
+					"name": "Get info user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "accessToken",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYSIsImlhdCI6MTc0MDAzNzIzNiwiZXhwIjoxNzQwMDgwNDM2fQ.JYdfFitM-sPK9T0CFVJOqvMCy8oIDARU-dpHFU-DXrc",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/user",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "[/img]",
+			"item": [
+				{
+					"name": "Get avatar url",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "accessToken",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYSIsImlhdCI6MTc0MDAzNzIzNiwiZXhwIjoxNzQwMDgwNDM2fQ.JYdfFitM-sPK9T0CFVJOqvMCy8oIDARU-dpHFU-DXrc",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/img",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"img"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "[/status]",
+			"item": [
+				{
+					"name": "Get status",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "accessToken",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYSIsImlhdCI6MTc0MDAzNzIzNiwiZXhwIjoxNzQwMDgwNDM2fQ.JYdfFitM-sPK9T0CFVJOqvMCy8oIDARU-dpHFU-DXrc",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/status",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"status"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "addressId",
+			"value": ""
+		},
+		{
+			"key": "orderId",
+			"value": ""
 		}
 	]
 }

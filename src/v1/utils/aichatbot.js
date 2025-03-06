@@ -1,6 +1,26 @@
 const axios = require('axios');
 const db = require('./mysql');
 
+const checkChatbotEnable = async (req, res, next) => {
+  try {
+    // Query the database to check the value of CHATBOT_ENABLE using promise-based syntax
+    const [rows] = await db.promise().query("SELECT value FROM settings WHERE `key` = 'CHATBOT_ENABLE'");
+
+    if (rows.length > 0 && rows[0].value == '0') {
+      // If the value is '1', proceed to the next middleware or chatbot logic
+      return res.status(403).json({ message: 'Access denied. Chatbot is disabled.' });
+    } else if (rows.length > 0) {
+      // If the value is '0', deny access
+      return next();
+    } else {
+      return res.status(403).json({ message: 'Access denied. Chatbot is not configured.' });
+    }
+  } catch (err) {
+    console.error('Error checking chatbot settings:', err);
+    return res.status(500).json({ message: 'Internal server error.' });
+  }
+}
+
 const sendMessageChatBot = async(systemPrompt, userMessage) => {
     try {
         // Retrieve the configuration values from the database.
@@ -136,4 +156,4 @@ const localChatbot = async (systemPrompt, userMessage) => {
     }
   };  
 
-module.exports = { sendMessageChatBot }
+module.exports = { sendMessageChatBot, checkChatbotEnable }

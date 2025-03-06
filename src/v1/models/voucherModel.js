@@ -15,10 +15,11 @@ const getVoucherByCode = async (voucherCode) => {
  * Update the voucher's count and user_id fields.
  */
 const updateVoucherCountAndUserId = async (voucherId, updatedCount, updatedUserIds) => {
-    await db.promise().query(
+    const [result] = await db.promise().query(
         'UPDATE voucher SET count = ?, user_id = ? WHERE id = ?',
         [updatedCount, JSON.stringify(updatedUserIds), voucherId]
     );
+    return result;
 };
 
 module.exports = {

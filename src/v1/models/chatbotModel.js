@@ -100,6 +100,7 @@ const getAllProducts = async () => {
     return rows;
 };
 
+
 module.exports = {
     getChatHistory,
     insertChatMessage,

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th3 06, 2025 lúc 06:40 AM
+-- Thời gian đã tạo: Th3 06, 2025 lúc 09:58 AM
 -- Phiên bản máy phục vụ: 8.0.40
 -- Phiên bản PHP: 8.2.12
 
@@ -74,7 +74,8 @@ INSERT INTO `address` (`id`, `user_id`, `full_name`, `address`, `phone`, `create
 (5, 3, 'Khanh', 'HCM', '012345678', '2025-03-02 17:25:39', '2025-03-02 17:25:39'),
 (7, 5, 'Khánh Nguyễn', 'Bình Thuận', '0937927513', '2025-03-02 17:25:39', '2025-03-02 17:25:39'),
 (8, 5, 'NGUYỄN VĂN KHÁNH', 'Thôn Bàu Giêng, Thắng Hải, Hàm Tân, Bình Thuận', '123', '2025-03-02 17:25:39', '2025-03-02 17:25:39'),
-(9, 5, 'NGUYỄN VĂN KHÁNH', 'Thôn Bàu Giêng, Thắng Hải, Hàm Tân, Bình Thuận', '333', '2025-03-02 17:25:39', '2025-03-02 17:25:39');
+(9, 5, 'NGUYỄN VĂN KHÁNH', 'Thôn Bàu Giêng, Thắng Hải, Hàm Tân, Bình Thuận', '333', '2025-03-02 17:25:39', '2025-03-02 17:25:39'),
+(18, 1, 'Nguyen Van Khanh', 'HCM', '0123456789', '2025-03-06 14:11:24', '2025-03-06 14:11:24');
 
 -- --------------------------------------------------------
 
@@ -148,7 +149,8 @@ INSERT INTO `cart` (`id`, `user_id`, `product_id`, `quantity`, `color`) VALUES
 (2, 3, 1, 2, 'Trắng'),
 (3, 3, 2, 1, 'Trắng'),
 (4, 5, 1, 1, 'Đen'),
-(5, 1, 1, 1, 'Đen');
+(12, 1, 2, 1, 'Xanh dương'),
+(13, 1, 2, 2, 'Đen');
 
 -- --------------------------------------------------------
 
@@ -223,28 +225,6 @@ CREATE TABLE `history_chatbot` (
   `time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Đang đổ dữ liệu cho bảng `history_chatbot`
---
-
-INSERT INTO `history_chatbot` (`id`, `user_id`, `message`, `isBot`, `time`, `updated_at`) VALUES
-(223, 3, 'Tôi thích màu trắng, có điện thoại nào màu trắng không?', 0, '2025-02-27 16:36:35', '2025-03-02 17:47:30'),
-(224, 3, 'Hiện tại đang có 2 model màu trắng: Google Pixel 3 và iPhone 12.  Bạn muốn xem thông tin về model nào?\n\n<br>\n\n(URL: <a href=\"/product/1\">Google Pixel 3</a>)\n\n (URL: <a href=\"/product/2\">iPhone 12</a>) \n', 1, '2025-02-27 16:36:41', '2025-03-02 17:47:30'),
-(225, 3, 'Giá của Google Pixel 3 màu trắng là bao nhiêu?', 0, '2025-02-27 16:37:03', '2025-03-02 17:47:30'),
-(226, 3, 'Google Pixel 3 màu trắng có giá **3100000 VND**. \n', 1, '2025-02-27 16:37:05', '2025-03-02 17:47:30'),
-(227, 3, 'Giá của Iphone 12 thì sao?', 0, '2025-02-27 16:37:21', '2025-03-02 17:47:30'),
-(228, 3, 'iPhone 12 có giá **27000000 VND**. \n\n<br> \n\n(URL: <a href=\"/product/1\">Google Pixel 3</a>)\n\n (URL: <a href=\"/product/2\">iPhone 12</a>) \n\n\n', 1, '2025-02-27 16:37:26', '2025-03-02 17:47:30'),
-(229, 3, 'Iphone 12 có những màu gì?', 0, '2025-02-27 16:37:31', '2025-03-02 17:47:30'),
-(230, 3, 'iPhone 12 có các màu sau: Màu Đen, Màu Xanh Dương, Màu Trắng. \n\n(URL: <a href=\"/product/2\">iPhone 12</a>) \n', 1, '2025-02-27 16:37:35', '2025-03-02 17:47:30'),
-(231, 3, 'Hãy chuyển hướng tôi sang trang Iphone 12', 0, '2025-02-27 16:37:51', '2025-03-02 17:47:30'),
-(232, 3, '(URL: <a href=\"/product/2\">iPhone 12</a>) \n', 1, '2025-02-27 16:37:54', '2025-03-02 17:47:30'),
-(1000, 1, 'Hello', 0, '2025-03-02 23:42:46', '2025-03-02 23:42:46'),
-(1001, 1, '```html\n<div>\n  Xin chào Khánh Nguyễn! 👋 Rất vui được hỗ trợ bạn tại KhanhHaoStore. 💖\n  <br>\n  Bạn có muốn xem các sản phẩm đang được yêu thích nhất của cửa hàng không? 🥰 Hoặc có thể bạn muốn tìm kiếm một sản phẩm cụ thể nào đó? 🤔\n  <br>\n  Để mình gợi ý nhé! 😉\n  <ul>\n    <li>\n      Để xem các sản phẩm đang được yêu thích nhất, bạn có thể truy cập trang chủ bằng cách nhấn vào nút bên dưới:\n      <br>\n      <button class=\"material-button\" value=\"/\" name=\"redirect\">Trang chủ</button>\n    </li>\n    <li>\n      Nếu bạn muốn tìm kiếm một sản phẩm cụ thể, bạn có thể nhập tên sản phẩm vào ô tìm kiếm ở đầu trang nhé! 🔍\n    </li>\n  </ul>\n  <br>\n  Bạn cần hỗ trợ gì thêm không ạ? 😊\n</div>\n```', 1, '2025-03-02 23:42:50', '2025-03-02 23:42:50'),
-(1002, 1, 'can you speak english?', 0, '2025-03-02 23:43:01', '2025-03-02 23:43:01'),
-(1003, 1, '```html\n<div>\n  Hello Khánh Nguyễn! 👋 I\'m so glad to assist you at KhanhHaoStore. 💖\n  <br>\n  Unfortunately, I am currently only able to communicate in Vietnamese. 😔 I hope you don\'t mind! 🙏\n  <br>\n  Is there anything I can help you with in Vietnamese? 😊\n  <br>\n  Maybe you would like to see the most popular products in our store? 🥰 Or perhaps you are looking for a specific product? 🤔\n  <br>\n  Let me suggest some options! 😉\n  <ul>\n    <li>\n      To see the most popular products, you can visit the homepage by clicking the button below:\n      <br>\n      <button class=\"material-button\" value=\"/\" name=\"redirect\">Trang chủ</button>\n    </li>\n    <li>\n      If you want to search for a specific product, you can enter the product name in the search box at the top of the page! 🔍\n    </li>\n  </ul>\n  <br>\n  Do you need any further assistance? 😊\n</div>\n```', 1, '2025-03-02 23:43:03', '2025-03-02 23:43:03'),
-(1004, 18, 'Hello World!', 0, '2025-03-06 12:36:28', '2025-03-06 12:36:28'),
-(1005, 18, 'Chào bạn a b! 😊 Rất vui khi được hỗ trợ bạn tại KhanhHaoStore.\n\nBạn đang cần tìm gì ạ? 🤔 Mình có thể giúp bạn tìm kiếm sản phẩm 📱, xem thông tin về cửa hàng 🏢, hoặc hỗ trợ bạn với tài khoản cá nhân của bạn 👤.\n\nHãy cho mình biết bạn muốn gì nhé! 😉\n', 1, '2025-03-06 12:36:31', '2025-03-06 12:36:31');
 
 -- --------------------------------------------------------
 
@@ -323,9 +303,7 @@ CREATE TABLE `notifications` (
 --
 
 INSERT INTO `notifications` (`id`, `text`, `url`, `time`, `isRead`, `created_at`, `updated_at`) VALUES
-(1, 'Test notification', '/', '2025-02-26 23:47:26', 1, '2025-02-28 21:35:45', '2025-02-28 17:47:41'),
-(2, 'Đơn hàng đang chờ thanh toán [ID: 17]', '/orders/17', '2025-03-01 01:04:35', 1, '2025-03-01 01:04:35', '2025-02-28 18:13:03'),
-(3, 'Đã thanh toán, hãy xác nhận đơn hàng [ID: 17]', '/orders/17', '2025-03-01 01:08:07', 1, '2025-03-01 01:08:07', '2025-02-28 18:13:03');
+(1, 'Test notification', '/', '2025-02-26 23:47:26', 1, '2025-02-28 21:35:45', '2025-02-28 17:47:41');
 
 -- --------------------------------------------------------
 
@@ -339,15 +317,6 @@ CREATE TABLE `orders` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Đang đổ dữ liệu cho bảng `orders`
---
-
-INSERT INTO `orders` (`id`, `user_id`, `created_at`, `updated_at`) VALUES
-(14, 5, '2025-03-02 22:08:22', '2025-03-02 22:08:22'),
-(16, 5, '2025-03-02 22:08:22', '2025-03-02 22:08:22'),
-(17, 5, '2025-03-02 22:08:22', '2025-03-02 22:08:22');
 
 -- --------------------------------------------------------
 
@@ -367,15 +336,6 @@ CREATE TABLE `order_info` (
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Đang đổ dữ liệu cho bảng `order_info`
---
-
-INSERT INTO `order_info` (`id`, `order_id`, `products`, `totalPrice`, `payment`, `status`, `address`, `orderAt`, `created_at`, `updated_at`) VALUES
-(13, 14, '[{\"id\": 1, \"name\": \"Google Pixel 3\", \"color\": \"Đen\", \"price\": 2700000, \"quantity\": 1, \"totalPrice\": 2700000}]', 2700000, 'tienmat', 'Đã hủy', '{\"name\": \"Khánh Nguyễn\", \"phone\": \"0937927513\", \"address\": \"Bình Thuận\"}', '2025-02-28 00:02:02', '2025-02-28 23:17:38', '2025-03-01 19:30:16'),
-(15, 16, '[{\"id\": 10, \"name\": \"Xiaomi Mi 11\", \"color\": \"Xanh dương\", \"price\": \"17000000\", \"quantity\": 1, \"totalPrice\": 17000000}]', 17000000, 'nganhang', 'Đã hủy', '{\"name\": \"NGUYỄN VĂN KHÁNH\", \"phone\": \"333\", \"address\": \"Thôn Bàu Giêng, Thắng Hải, Hàm Tân, Bình Thuận\"}', '2025-03-01 01:00:57', '2025-03-01 01:00:57', '2025-03-01 01:00:57'),
-(16, 17, '[{\"id\": 10, \"name\": \"Xiaomi Mi 11\", \"color\": \"Xanh dương\", \"price\": \"17000000\", \"quantity\": 2, \"totalPrice\": 34000000}, {\"id\": 6, \"name\": \"OnePlus 9\", \"color\": \"Xanh dương\", \"price\": \"19000000\", \"quantity\": 1, \"totalPrice\": 19000000}]', 53000000, 'nganhang', 'Đã hủy', '{\"name\": \"NGUYỄN VĂN KHÁNH\", \"phone\": \"123\", \"address\": \"Thôn Bàu Giêng, Thắng Hải, Hàm Tân, Bình Thuận\"}', '2025-03-01 01:04:35', '2025-03-01 01:04:35', '2025-03-01 19:32:38');
 
 -- --------------------------------------------------------
 
@@ -410,7 +370,7 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`id`, `name`, `description`, `favorite`, `color`, `created_at`, `updated_at`) VALUES
-(1, 'Google Pixel 3', 'a pixel 3 phone', '[2, 3, 5, 1, 16]', '[{\"img\": \"/img/google-pixel-3-black.jpg\", \"name\": \"Đen\", \"money\": \"3000000\", \"quantity\": 2, \"moneyDiscount\": \"2700000\"}, {\"img\": \"/img/google-pixel-3-white.jpg\", \"name\": \"Trắng\", \"money\": \"3100000\", \"quantity\": \"2\", \"moneyDiscount\": \"2900000\"}, {\"img\": \"/img/google-pixel-3-pink.jpg\", \"name\": \"Hồng\", \"money\": \"3200000\", \"quantity\": \"0\"}]', '2025-02-28 14:47:44', '2025-03-01 19:30:37'),
+(1, 'Google Pixel 3', 'a pixel 3 phone', '[2, 3, 5, 1, 16]', '[{\"img\": \"/img/google-pixel-3-black.jpg\", \"name\": \"Đen\", \"money\": \"3000000\", \"quantity\": 4, \"moneyDiscount\": \"2700000\"}, {\"img\": \"/img/google-pixel-3-white.jpg\", \"name\": \"Trắng\", \"money\": \"3100000\", \"quantity\": \"2\", \"moneyDiscount\": \"2900000\"}, {\"img\": \"/img/google-pixel-3-pink.jpg\", \"name\": \"Hồng\", \"money\": \"3200000\", \"quantity\": \"0\"}]', '2025-02-28 14:47:44', '2025-03-01 19:30:37'),
 (2, 'iPhone 12', 'latest iPhone model a', '[3]', '[{\"img\": \"/img/ZePnBJgWxoKBP3NuxpF1bDbSbl0Qar4WffMwHG2B.webp\", \"name\": \"Đen\", \"money\": \"25000000\", \"quantity\": \"2\", \"moneyDiscount\": \"24000000\"}, {\"img\": \"/img/qmLN6shAnAijEyYSwM2Ao4OTd50fKRMRbFjYUy9u.jpg\", \"name\": \"Xanh dương\", \"money\": \"26000000\", \"quantity\": \"12\"}, {\"img\": \"/img/5MZ2hai0gMQBDVsmmQgeQvSRmkqXSTVgn9aVRggT.webp\", \"name\": \"Trắng\", \"money\": \"27000000\", \"quantity\": \"3\"}]', '2025-02-28 14:47:44', '2025-02-28 11:49:51'),
 (3, 'Xiaomi Mi 11 Lite 5G', 'mid-range phone', '[]', '[{\"img\": \"/img/egLl6co6KQGzg7wIZ3c62cqpBNMglOHQlVsZiNcg.jpg\", \"name\": \"Đen\", \"money\": \"14000000\", \"quantity\": \"3\"}, {\"img\": \"/img/g7edeDr53GRPIq1G7VPLZsxZkE9D9rDHVzHJvhai.webp\", \"name\": \"Xanh dương\", \"money\": \"20000000\", \"quantity\": \"5\", \"moneyDiscount\": \"19000000\"}, {\"img\": \"/img/hUnMqfnsNzbOWgjiUistiOquFEw63sV5OeNKvgfV.png\", \"name\": \"Vàng\", \"money\": \"20000000\", \"quantity\": \"7\"}, {\"img\": \"/img/04rCezlCnOv7jhmAsQKRvlj9XQwIvsc5Nv8neBM3.jpg\", \"name\": \"Hồng\", \"money\": \"14000000\", \"quantity\": \"1\"}]', '2025-02-28 09:10:06', '2025-02-28 11:52:32'),
 (4, 'Samsung Galaxy S21', NULL, '[]', '[{\"img\": \"/img/c8TKZA6O2IiUKbd4qSQoKaUu2CDhNpCyUBgfeUY5.jpg\", \"name\": \"Hồng\", \"money\": \"22000000\", \"quantity\": \"4\", \"moneyDiscount\": \"21000000\"}, {\"img\": \"/img/h9Lt8DZ2NtW7i9TxFEHWCeGTqfjtFcAU1MQJNmK3.webp\", \"name\": \"Xám\", \"money\": \"22000000\", \"quantity\": \"3\"}]', '2025-02-28 09:24:46', '2025-02-28 11:59:13'),
@@ -542,9 +502,9 @@ CREATE TABLE `voucher` (
 --
 
 INSERT INTO `voucher` (`id`, `code`, `discount`, `count`, `limit_user`, `user_id`, `created_at`, `updated_at`) VALUES
-(1, 'KHANHSTORE10', 0.15, 19993, '[]', '[3]', '2025-03-01 21:53:08', '2025-03-01 18:14:58'),
-(3, 'KHANHSTORE100', 1, 9999, '[]', '[]', '2025-03-01 18:28:44', '2025-03-01 18:28:44'),
-(4, 'KHANHSTORE50', 0.5, 5000, '[1]', '[]', '2025-03-01 18:33:34', '2025-03-01 18:40:52');
+(1, 'KHANHSTORE10', 0.1, 19988, '[]', '[1]', '2025-03-01 21:53:08', '2025-03-01 18:14:58'),
+(3, 'KHANHSTORE100', 1, 9998, '[]', '[1]', '2025-03-01 18:28:44', '2025-03-01 18:28:44'),
+(4, 'KHANHSTORE50', 0.5, 4999, '[1]', '[1]', '2025-03-01 18:33:34', '2025-03-01 18:40:52');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -708,7 +668,7 @@ ALTER TABLE `account`
 -- AUTO_INCREMENT cho bảng `address`
 --
 ALTER TABLE `address`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT cho bảng `admin`
@@ -720,7 +680,7 @@ ALTER TABLE `admin`
 -- AUTO_INCREMENT cho bảng `cart`
 --
 ALTER TABLE `cart`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT cho bảng `colors`
@@ -738,7 +698,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT cho bảng `history_chatbot`
 --
 ALTER TABLE `history_chatbot`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1006;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1012;
 
 --
 -- AUTO_INCREMENT cho bảng `jobs`
@@ -756,19 +716,19 @@ ALTER TABLE `migrations`
 -- AUTO_INCREMENT cho bảng `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT cho bảng `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT cho bảng `order_info`
 --
 ALTER TABLE `order_info`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT cho bảng `product`

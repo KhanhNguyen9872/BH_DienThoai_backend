@@ -6,9 +6,8 @@ const cors = require('cors');
 const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config();
-const db = require('./utils/mysql'); // Import the MySQL connection
-const { verifyToken } = require('./utils/authenticate');
-const telebot = require('./utils/telebot');
+const db = require('./v1/utils/mysql'); // Import the MySQL connection
+const { verifyToken } = require('./v1/utils/authenticate');
 const app = express();
 const port = process.env.EXPRESS_PORT || 5000;
 
@@ -19,66 +18,30 @@ app.use(cors());
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, '../public')));
 
-const products = require('./routers/productRoute');
-const accounts = require('./routers/accountRoute');
-const users = require('./routers/userRoute');
-const address = require('./routers/addressRoute');
-const carts = require('./routers/cartRoute');
-const vouchers = require('./routers/voucherRoute');
-const orders = require('./routers/orderRoute');
-const chatbot = require('./routers/chatbotRoute');
-const img = require('./routers/imgRoute');
+const API_VERSION = "v1";
 
-// Example route
-app.use('/products', products);
-app.use('/accounts', accounts);
-app.use('/user', verifyToken, users);
-app.use('/address', verifyToken, address);
-app.use('/carts', verifyToken, carts);
-app.use('/vouchers', verifyToken, vouchers);
-app.use('/orders', verifyToken, orders);
-app.use('/chatbot', verifyToken, async (req, res, next) => {
-  try {
-    // Query the database to check the value of CHATBOT_ENABLE using promise-based syntax
-    const [rows] = await db.promise().query("SELECT value FROM settings WHERE `key` = 'CHATBOT_ENABLE'");
+const products = require(`./${API_VERSION}/routers/productRoute`);
+const accounts = require(`./${API_VERSION}/routers/accountRoute`);
+const users = require(`./${API_VERSION}/routers/userRoute`);
+const address = require(`./${API_VERSION}/routers/addressRoute`);
+const carts = require(`./${API_VERSION}/routers/cartRoute`);
+const vouchers = require(`./${API_VERSION}/routers/voucherRoute`);
+const orders = require(`./${API_VERSION}/routers/orderRoute`);
+const chatbot = require(`./${API_VERSION}/routers/chatbotRoute`);
+const img = require(`./${API_VERSION}/routers/imgRoute`);
+const status = require(`./${API_VERSION}/routers/statusRoute`)
+const { checkChatbotEnable } = require(`./${API_VERSION}/utils/aichatbot`);
 
-    if (rows.length > 0 && rows[0].value == '0') {
-      // If the value is '1', proceed to the next middleware or chatbot logic
-      return res.status(403).json({ message: 'Access denied. Chatbot is disabled.' });
-    } else if (rows.length > 0) {
-      // If the value is '0', deny access
-      return next();
-    } else {
-      return res.status(403).json({ message: 'Access denied. Chatbot is not configured.' });
-    }
-  } catch (err) {
-    console.error('Error checking chatbot settings:', err);
-    return res.status(500).json({ message: 'Internal server error.' });
-  }
-}, chatbot);
-app.use('/img', img);
-
-app.get('/status', async (req, res) => {
-  try {
-    // Query the database for both the "MAINTENANCE" and "CHATBOT_ENABLE" keys
-    const [maintenanceRows] = await db.promise().query('SELECT value FROM settings WHERE `key` = "MAINTENANCE"');
-    const [chatbotRows] = await db.promise().query('SELECT value FROM settings WHERE `key` = "CHATBOT_ENABLE"');
-
-    // Check if the keys exist and return the appropriate status
-    const maintenanceStatus = maintenanceRows[0]?.value == '0' ? 'ALIVE' : 'MAINTENANCE';
-    const chatbotEnabled = chatbotRows[0]?.value;
-
-    // Return the status and the chatbot flag
-    res.json({
-      status: maintenanceStatus,
-      chatbot: chatbotEnabled
-    });
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ status: 'ERROR' });
-  }
-});
+app.use(`/api/${API_VERSION}/products`, products);
+app.use(`/api/${API_VERSION}/accounts`, accounts);
+app.use(`/api/${API_VERSION}/user`, verifyToken, users);
+app.use(`/api/${API_VERSION}/address`, verifyToken, address);
+app.use(`/api/${API_VERSION}/carts`, verifyToken, carts);
+app.use(`/api/${API_VERSION}/vouchers`, verifyToken, vouchers);
+app.use(`/api/${API_VERSION}/orders`, verifyToken, orders);
+app.use(`/api/${API_VERSION}/chatbot`, verifyToken, checkChatbotEnable, chatbot);
+app.use(`/api/${API_VERSION}/img`, img);
+app.use(`/api/${API_VERSION}/status`, status);
 
 // Default 404 handler
 app.use((req, res, next) => {
