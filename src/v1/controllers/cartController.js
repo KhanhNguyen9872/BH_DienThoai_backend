@@ -1,4 +1,5 @@
 const CartModel = require('../models/cartModel');
+const ProductModel = require('../models/productModel');
 
 class CartController {
     /**
@@ -31,6 +32,20 @@ class CartController {
                 return res.status(400).json({ message: "Missing field required" })
             }
 
+            const p = await ProductModel.getProductById(productId);
+            if (!p || p.length < 1) {
+                return res.status(400).json({ message: "Product not found" });
+            }
+
+            const colorProduct = p[0].color.find(c => c.name == color);
+            if (!colorProduct) {
+                return res.status(400).json({ message: "Color of product not found" });
+            }
+
+            if (quantity > colorProduct.quantity) {
+                return res.status(400).json({ message: "quantity is bigger than product quantity" });
+            }
+
             if (quantity < 1) {
                 return res.status(400).json({ message: "quantity must > 0" })
             }
@@ -55,6 +70,12 @@ class CartController {
 
             if (!productId || !color) {
                 return res.status(400).json({ message: "Missing field required" })
+            }
+
+            const carts = await CartModel.getCartItems(userId);
+            const find = carts.find(c => c.productId == productId && c.color == color);
+            if (!find) {
+                return res.status(400).json({ message: "Product and color is not in cart" })
             }
 
             await CartModel.removeFromCart(userId, productId, color);

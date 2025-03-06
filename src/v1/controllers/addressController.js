@@ -27,7 +27,7 @@ class AddressController {
             const address = await AddressModel.getAddressByIdAndUser(addressId, userId);
             if (address.length === 0) {
                 return res.status(404).json({
-                    message: 'Address not found or you do not have permission to view this address'
+                    message: 'Address not found'
                 });
             }
 
@@ -53,17 +53,19 @@ class AddressController {
                 });
             }
 
+            const addresses = await AddressModel.getAddressesByUser(userId);
+            if (addresses && addresses.length >= 3) {
+                return res.status(400).json({ message: "Cannot add more address, please remove some address" });
+            }
+
             const insertedId = await AddressModel.createAddress(userId, fullName, address, phone);
 
+            if (!insertedId) {
+                return res.status(500).json({ message: 'Error while create address' })
+            }
+
             return res.status(201).json({
-                message: 'Address added successfully',
-                address: {
-                    id: insertedId,
-                    user_id: userId,
-                    fullName,
-                    address,
-                    phone
-                }
+                message: 'Address added successfully'
             });
         } catch (error) {
             console.error('Error adding address:', error);
@@ -82,7 +84,7 @@ class AddressController {
             const affectedRows = await AddressModel.deleteAddressByIdAndUser(addressId, userId);
             if (affectedRows === 0) {
                 return res.status(404).json({
-                    message: 'Address not found or you do not have permission to delete this address'
+                    message: 'Address not found'
                 });
             }
 
@@ -115,19 +117,12 @@ class AddressController {
 
             if (affectedRows === 0) {
                 return res.status(404).json({
-                    message: 'Address not found or you do not have permission to update this address'
+                    message: 'Address not found'
                 });
             }
 
             return res.status(200).json({
-                message: 'Address updated successfully',
-                address: {
-                    id: addressId,
-                    user_id: userId,
-                    fullName,
-                    address,
-                    phone
-                }
+                message: 'Address updated successfully'
             });
         } catch (error) {
             console.error('Error updating address:', error);

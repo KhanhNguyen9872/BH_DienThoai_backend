@@ -196,8 +196,9 @@ class OrderController {
             // Calculate the total price of all products
             let totalPrice = extractedProducts.reduce((sum, product) => sum + product.totalPrice, 0);
             
-            const totalDiscount = (totalPrice * voucher.discount);
+            let totalDiscount = 0;
             if (voucher) {
+                totalDiscount =  (totalPrice * voucher.discount);
                 totalPrice = totalPrice - totalDiscount;
             }
     
@@ -347,6 +348,16 @@ class OrderController {
         try {
             const orderId = req.params.orderId;
             const userId = req.user.userId;
+
+            const r = await OrderModel.getOrderInfo(orderId);
+            if (r && r.length > 0) {
+                const status = r[0].status;
+                if (status == 'Đã hủy') {
+                    return res.status(400).json({ message: 'The order was previously canceled.' });
+                }
+            } else {
+                return res.status(400).json({ message: 'Order not found' });
+            }
 
             // Begin transaction
             await OrderModel.beginTransaction();

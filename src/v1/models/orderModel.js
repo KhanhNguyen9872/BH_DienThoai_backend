@@ -168,7 +168,7 @@ const cancelOrder = async (orderId) => {
  */
 const getOrderInfo = async (orderId) => {
     const [rows] = await db.promise().query(
-        'SELECT products, totalPrice FROM order_info WHERE order_id = ?',
+        'SELECT products, totalPrice, status FROM order_info WHERE order_id = ?',
         [orderId]
     );
     return rows;
