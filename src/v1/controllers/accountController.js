@@ -44,13 +44,16 @@ class AccountController {
    */
   async createAccount(req, res) {
     try {
-      const { username, password, email, firstName, lastName, lock, information } = req.body;
+      const { username, password, email, firstName, lastName } = req.body;
 
       // Basic server-side checks
       if (!username || !password || !email || !firstName || !lastName) {
         return res.status(400).json({ error: 'All fields are required' });
       }
 
+      const lock = false;
+      const information = [];
+      
       // Perform transaction in the model
       let hashedPassword = md5(password);
       const result = await AccountModel.createUserAccountTransaction({
