@@ -193,7 +193,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"zz\",\r\n  \"password\": \"zz\",\r\n  \"email\": \"zz@gmail.com\",\r\n  \"firstName\": \"a\",\r\n  \"lastName\": \"b\",\r\n  \"lock\": false,\r\n  \"information\": []\r\n}",
+							"raw": "{\r\n  \"username\": \"zz\",\r\n  \"password\": \"zz\",\r\n  \"email\": \"zz@gmail.com\",\r\n  \"firstName\": \"a\",\r\n  \"lastName\": \"b\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -278,6 +278,64 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.environment.set('accessToken', '');"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "username",
+									"value": "a",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "khanh",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/accounts",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"accounts"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -325,6 +383,43 @@
 					"response": []
 				},
 				{
+					"name": "Delete history message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "accessToken",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYSIsImlhdCI6MTc0MDAzNzIzNiwiZXhwIjoxNzQwMDgwNDM2fQ.JYdfFitM-sPK9T0CFVJOqvMCy8oIDARU-dpHFU-DXrc",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{base_url}}/chatbot",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"chatbot"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Send a message",
 					"request": {
 						"auth": {
@@ -345,43 +440,6 @@
 								{
 									"key": "message",
 									"value": "Hello World!",
-									"type": "text"
-								}
-							]
-						},
-						"url": {
-							"raw": "{{base_url}}/chatbot",
-							"host": [
-								"{{base_url}}"
-							],
-							"path": [
-								"chatbot"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get history message Copy",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{accessToken}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "accessToken",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYSIsImlhdCI6MTc0MDAzNzIzNiwiZXhwIjoxNzQwMDgwNDM2fQ.JYdfFitM-sPK9T0CFVJOqvMCy8oIDARU-dpHFU-DXrc",
 									"type": "text"
 								}
 							]
@@ -962,7 +1020,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"payment\": \"nganhang\",\r\n  \"address\": 18,\r\n  \"products\": [\r\n    {\r\n      \"id\": 1,\r\n      \"color\": \"Đen\",\r\n      \"quantity\": 2\r\n    }\r\n  ],\r\n  \"voucherCode\": \"KHANHSTORE10\"\r\n}",
+							"raw": "{\r\n  \"payment\": \"nganhang\",\r\n  \"address\": 18,\r\n  \"products\": [\r\n    {\r\n      \"id\": 1,\r\n      \"color\": \"Đen\",\r\n      \"quantity\": 2\r\n    }\r\n  ],\r\n  \"voucherCode\": \"\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1292,6 +1350,110 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Auth (Login) Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.environment.set('accessToken', pm.response.json().accessToken);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "a",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "khanh",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/auth",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Auth (Login) Copy",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.environment.set('accessToken', pm.response.json().accessToken);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "a",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "khanh",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/accounts/auth",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"accounts",
+						"auth"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"variable": [
