@@ -2,9 +2,25 @@
 const AccountModel = require('../models/accountModel');
 const crypto = require('crypto');
 const { md5 } = require('../utils/lib');
-const { generateToken } = require('../utils/auth');
+const { generateToken, revokeToken } = require('../utils/auth');
 
 class AccountController {
+  async logout(req, res) {
+    try {
+      if (!req.user || !req.user.id) {
+        return res.status(400).json({ message: 'User not authenticated' });
+      }
+  
+      const user_id = req.user.id;
+      const result = await revokeToken(user_id);
+      
+      return res.status(200).json({ message: 'Logout successful' });
+    } catch (error) {
+      console.error('Logout error:', error);
+      return res.status(500).json({ message: 'Internal server error' });
+    }
+  }
+
   /**
    * Handle user login (POST /auth).
    */

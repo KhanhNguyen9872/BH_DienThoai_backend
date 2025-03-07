@@ -5,7 +5,6 @@ const accountController = require('../controllers/accountController');
 const { verifyToken } = require('../utils/auth');
 const { check, validationResult } = require('express-validator');
 
-// POST /auth (login)
 router.post(
   '/auth',
   [
@@ -13,7 +12,6 @@ router.post(
     check('password').notEmpty().withMessage('Password is required'),
   ],
   (req, res) => {
-    // Handle validation errors from express-validator
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -22,19 +20,21 @@ router.post(
   }
 );
 
-// POST / (create user + account + address)
 router.post('/', (req, res) => {
   return accountController.createAccount(req, res);
 });
 
-// POST /forgot (forgot password)
 router.post('/forgot', (req, res) => {
   return accountController.forgotPassword(req, res);
 });
 
-// PUT /password (change password)
 router.patch('/password', verifyToken, (req, res) => {
   return accountController.changePassword(req, res);
 });
+
+router.delete('/', verifyToken, (req, res) => {
+  return accountController.logout(req, res);
+});
+
 
 module.exports = router;

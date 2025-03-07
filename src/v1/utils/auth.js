@@ -29,6 +29,14 @@ const verifyToken = (req, res, next) => {
   });
 };
 
+const revokeToken = (user_id) => {
+  for (let i = sessions.length - 1; i >= 0; i--) {
+    if (sessions[i].user_id === user_id) {
+      sessions.splice(i, 1);
+    }
+  }
+};
+
 const generateToken = (user_id) => {
   const session_id = uuidv4();
 
@@ -39,4 +47,4 @@ const generateToken = (user_id) => {
   return accessToken;
 }
 
-module.exports = { verifyToken, generateToken }; 
+module.exports = { verifyToken, generateToken, revokeToken }; 
