@@ -1,8 +1,8 @@
 // controllers/accountController.js
 const AccountModel = require('../models/accountModel');
-const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const { md5 } = require('../utils/lib');
+const { generateToken } = require('../utils/auth');
 
 class AccountController {
   /**
@@ -12,23 +12,21 @@ class AccountController {
     try {
       const { username, password } = req.body;
       const hashedPassword = md5(password);
-
+  
       // Find user with matching credentials
       const results = await AccountModel.findAccountByCredentials(username, hashedPassword);
       if (results.length === 0) {
         return res.status(401).json({ message: 'Invalid credentials' });
       }
-
+  
       const user = results[0];
       // Check if the account is locked
       if (user.lock_acc === 1) {
         return res.status(403).json({ message: 'Account is locked' });
       }
-
-      // Create JWT
-      const payload = { id: user.id };
-      const accessToken = jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '12h' });
-
+  
+      const accessToken = generateToken(user.id);
+  
       return res.status(200).json({
         message: 'Login successful',
         accessToken,

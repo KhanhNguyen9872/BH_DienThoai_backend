@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const productController = require('../controllers/productController');
-const { verifyToken } = require('../utils/authenticate');
+const { verifyToken } = require('../utils/auth');
 const { getUserId } = require('../utils/lib');
 
 // GET all products

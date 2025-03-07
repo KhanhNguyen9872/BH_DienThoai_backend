@@ -1,7 +1,5 @@
 // models/accountModel.js
 const db = require('../utils/mysql');
-const { md5 } = require('../utils/lib');
-const crypto = require('crypto');
 
 /**
  * Find account by credentials (username & password).
