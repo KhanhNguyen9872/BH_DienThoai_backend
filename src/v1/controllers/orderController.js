@@ -24,10 +24,7 @@ class OrderController {
                 products: order.products
             }));
 
-            return res.json({
-                id: userId,
-                orders: formattedOrders
-            });
+            return res.json(formattedOrders);
         } catch (error) {
             console.error('Error getting orders:', error);
             return res.status(500).json({ message: 'Internal server error' });
@@ -303,43 +300,51 @@ class OrderController {
         try {
             const orderId = req.params.id;
             const userId = req.user.userId;
-
+    
             // Check if this order belongs to the user
             const orders = await OrderModel.getOrderForUser(orderId, userId);
             if (orders.length === 0) {
                 return res.status(404).json({ message: 'Order not found' });
             }
-
+    
             // Fetch full order details
             const orderDetails = await OrderModel.getFullOrderDetails(orderId);
             if (orderDetails.length === 0) {
                 return res.status(404).json({ message: 'Order details not found' });
             }
-
+    
             const orderInfo = orderDetails[0];
+    
+            // Check if order status is already "Đang chờ xác nhận"
+            console.log(orderInfo.status);
+            if (orderInfo.status != 'Đang chờ thanh toán') {
+                return res.status(409).json({ message: 'Order is not in waiting for payment' });
+            }
+    
             const fullName = `${orderInfo.first_name} ${orderInfo.last_name}`;
             const payment = orderInfo.payment;
             const orderAt = orderInfo.orderAt;
-
+    
             const message = `Đơn hàng ID: ${orderId} đã được thanh toán và đang chờ xác nhận:\n\n` +
                             `Khách hàng: ${fullName}\n` +
                             `Trạng thái: Đang chờ xác nhận\n` +
                             `Thanh toán: ${payment}\n` +
                             `Ngày đặt hàng: ${orderAt}\n\n`;
-
+    
             // Update status to "Đang chờ xác nhận"
             await OrderModel.updateOrderStatus(orderId, 'Đang chờ xác nhận');
-
+    
             // Send Telegram & in-app notification
             sendTelegramMessage(message);
             await sendNotification(`Đã thanh toán, hãy xác nhận đơn hàng [ID: ${orderId}]`, `/orders/${orderId}`);
-
+    
             return res.json({ message: 'Order status updated successfully' });
         } catch (error) {
             console.error('Error updating order status:', error);
             return res.status(500).json({ message: 'Internal server error' });
         }
     }
+    
 
     /**
      * Cancel an order

@@ -7,13 +7,17 @@ class ProductController {
     async getAllProducts(req, res) {
         try {
             const products = await ProductModel.getAllProducts();
-            // If no products found, just return an empty array (200 status is fine).
-            return res.status(200).json(products);
+            // Transform each product to replace the "favorite" array with its count.
+            const updatedProducts = products.map(product => ({
+                ...product,
+                favorite: product.favorite.length  // using "favorites" as count
+            }));
+            return res.status(200).json(updatedProducts);
         } catch (error) {
             console.error(error);
             return res.status(500).json({ message: 'Server error' });
         }
-    }
+    }    
 
     /**
      * Get a single product by ID

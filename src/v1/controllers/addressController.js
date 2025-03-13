@@ -65,6 +65,7 @@ class AddressController {
             }
 
             return res.status(201).json({
+                addressId: insertedId,
                 message: 'Address added successfully'
             });
         } catch (error) {

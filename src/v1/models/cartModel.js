@@ -15,10 +15,25 @@ const getCartItems = async (userId) => {
  * Add a product to the user's cart.
  */
 const addToCart = async (userId, productId, quantity, color) => {
-    await db.promise().query(
-        'INSERT INTO cart (user_id, product_id, quantity, color) VALUES (?, ?, ?, ?)',
-        [userId, productId, quantity, color]
+    // Check if the item is already in the cart for this user with the same product and color
+    const [rows] = await db.promise().query(
+        'SELECT quantity FROM cart WHERE user_id = ? AND product_id = ? AND color = ?',
+        [userId, productId, color]
     );
+
+    if (rows.length > 0) {
+        // Update the quantity if found
+        await db.promise().query(
+            'UPDATE cart SET quantity = quantity + ? WHERE user_id = ? AND product_id = ? AND color = ?',
+            [quantity, userId, productId, color]
+        );
+    } else {
+        // Insert a new row if not found
+        await db.promise().query(
+            'INSERT INTO cart (user_id, product_id, quantity, color) VALUES (?, ?, ?, ?)',
+            [userId, productId, quantity, color]
+        );
+    }
 };
 
 /**

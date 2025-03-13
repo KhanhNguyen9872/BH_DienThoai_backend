@@ -11,6 +11,58 @@
 			"item": [
 				{
 					"name": "Get all products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response is an array\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"// Test that each product has the required properties\r",
+									"pm.test(\"Each product has id, name, description, favorite, color, created_at, updated_at\", function () {\r",
+									"    jsonData.forEach(function(product) {\r",
+									"        pm.expect(product).to.have.property(\"id\");\r",
+									"        pm.expect(product).to.have.property(\"name\");\r",
+									"        pm.expect(product).to.have.property(\"description\");\r",
+									"        pm.expect(product).to.have.property(\"favorite\");\r",
+									"        pm.expect(product).to.have.property(\"color\");\r",
+									"        pm.expect(product).to.have.property(\"created_at\");\r",
+									"        pm.expect(product).to.have.property(\"updated_at\");\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"// Test that each product's color array items have the required properties\r",
+									"pm.test(\"Each color entry has img, name, money, and quantity\", function () {\r",
+									"    jsonData.forEach(function(product) {\r",
+									"        // Ensure that the color property is an array\r",
+									"        pm.expect(product.color).to.be.an('array');\r",
+									"        product.color.forEach(function(color) {\r",
+									"            pm.expect(color).to.have.property(\"img\");\r",
+									"            pm.expect(color).to.have.property(\"name\");\r",
+									"            pm.expect(color).to.have.property(\"money\");\r",
+									"            pm.expect(color).to.have.property(\"quantity\");\r",
+									"            // moneyDiscount is optional so we don't check for it\r",
+									"        });\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -31,6 +83,61 @@
 				},
 				{
 					"name": "Get product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var product = pm.response.json();\r",
+									"\r",
+									"// Test that the response is an object\r",
+									"pm.test(\"Response is an object\", function () {\r",
+									"    pm.expect(product).to.be.an('object');\r",
+									"});\r",
+									"\r",
+									"// Test that the product has the required properties\r",
+									"pm.test(\"Product has required properties\", function () {\r",
+									"    pm.expect(product).to.have.property(\"id\");\r",
+									"    pm.expect(product).to.have.property(\"name\");\r",
+									"    pm.expect(product).to.have.property(\"description\");\r",
+									"    pm.expect(product).to.have.property(\"favorite\");\r",
+									"    pm.expect(product).to.have.property(\"color\");\r",
+									"    pm.expect(product).to.have.property(\"created_at\");\r",
+									"    pm.expect(product).to.have.property(\"updated_at\");\r",
+									"});\r",
+									"\r",
+									"// Test that favorite is an array of numbers\r",
+									"pm.test(\"Favorite is an array of numbers\", function () {\r",
+									"    pm.expect(product.favorite).to.be.an('array');\r",
+									"    product.favorite.forEach(function(fav) {\r",
+									"        pm.expect(fav).to.be.a('number');\r",
+									"    });\r",
+									"});\r",
+									"\r",
+									"// Test that the color property is an array and each color object has required properties\r",
+									"pm.test(\"Color array is valid\", function () {\r",
+									"    pm.expect(product.color).to.be.an('array');\r",
+									"    product.color.forEach(function(color) {\r",
+									"        pm.expect(color).to.have.property(\"img\");\r",
+									"        pm.expect(color).to.have.property(\"name\");\r",
+									"        pm.expect(color).to.have.property(\"money\");\r",
+									"        pm.expect(color).to.have.property(\"quantity\");\r",
+									"        // moneyDiscount is optional, so we don't assert its existence\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -58,6 +165,31 @@
 				},
 				{
 					"name": "Add favorite product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the correct message\r",
+									"pm.test(\"Response has correct message\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"Product added to favorites\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -93,6 +225,31 @@
 				},
 				{
 					"name": "Delete Favorite product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the correct message\r",
+									"pm.test(\"Response has correct message\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"Product removed from favorites\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -142,7 +299,15 @@
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
-									"pm.environment.set('accessToken', pm.response.json().accessToken);"
+									"pm.test(\"accessToken is not null\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.accessToken).to.not.be.null;\r",
+									"    pm.expect(jsonData.accessToken).to.not.be.undefined;\r",
+									"});\r",
+									"\r",
+									"pm.environment.set('accessToken', pm.response.json().accessToken);\r",
+									"\r",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -156,19 +321,13 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "username",
-									"value": "a",
-									"type": "text"
-								},
-								{
-									"key": "password",
-									"value": "khanh",
-									"type": "text"
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"{{username}}\",\r\n    \"password\": \"{{password}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/accounts/auth",
@@ -185,6 +344,46 @@
 				},
 				{
 					"name": "Register account",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('username', 'khanhtester');\r",
+									"pm.collectionVariables.set('password', 'khanhtester');\r",
+									"pm.collectionVariables.set('email', 'khanhtester@gmail.com');\r",
+									"pm.collectionVariables.set('firstName', 'Khanh');\r",
+									"pm.collectionVariables.set('lastName', 'Nguyen');\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the correct message\r",
+									"pm.test(\"Response message is correct\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"User created successfully\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -193,7 +392,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"zz\",\r\n  \"password\": \"zz\",\r\n  \"email\": \"zz@gmail.com\",\r\n  \"firstName\": \"a\",\r\n  \"lastName\": \"b\"\r\n}",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"password\": \"{{password}}\",\r\n  \"email\": \"{{email}}\",\r\n  \"firstName\": \"{{firstName}}\",\r\n  \"lastName\": \"{{lastName}}\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -214,6 +413,37 @@
 				},
 				{
 					"name": "Forgot password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the correct message\r",
+									"pm.test(\"Response message is correct\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"Password reset successful\");\r",
+									"});\r",
+									"\r",
+									"// Test that newPassword is present and save it to a collection variable\r",
+									"pm.test(\"New password is present\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"newPassword\");\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"password\", jsonData.newPassword);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -222,7 +452,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"username\": \"zz\",\r\n  \"email\": \"zz@gmail.com\"\r\n}",
+							"raw": "{\r\n  \"username\": \"{{username}}\",\r\n  \"email\": \"{{email}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -244,6 +474,43 @@
 				},
 				{
 					"name": "Change password",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('newPassword', 'khanhtester');"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the correct message\r",
+									"pm.test(\"Response message is correct\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"Password updated successfully\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.collectionVariables.set('password', pm.collectionVariables.get('newPassword'));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -259,7 +526,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"oldPassword\": \"4984f3064dd7a408\",\r\n  \"newPassword\": \"zz\"\r\n}",
+							"raw": "{\r\n  \"oldPassword\": \"{{password}}\",\r\n  \"newPassword\": \"{{newPassword}}\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -288,6 +555,15 @@
 								"exec": [
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the correct logout message\r",
+									"pm.test(\"Response message is correct\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"Logout successful\");\r",
 									"});\r",
 									"\r",
 									"pm.environment.set('accessToken', '');"
@@ -344,6 +620,30 @@
 			"item": [
 				{
 					"name": "Get history message",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response is an array\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -365,7 +665,7 @@
 							"formdata": [
 								{
 									"key": "accessToken",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYSIsImlhdCI6MTc0MDAzNzIzNiwiZXhwIjoxNzQwMDgwNDM2fQ.JYdfFitM-sPK9T0CFVJOqvMCy8oIDARU-dpHFU-DXrc",
+									"value": "{{accessToken}}",
 									"type": "text"
 								}
 							]
@@ -384,6 +684,31 @@
 				},
 				{
 					"name": "Delete history message",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the correct message\r",
+									"pm.test(\"Response message is correct\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"Chat history cleared successfully.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -421,6 +746,35 @@
 				},
 				{
 					"name": "Send a message",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response has a 'content' property\r",
+									"pm.test(\"Response has content property\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"content\");\r",
+									"});\r",
+									"\r",
+									"// Test that the 'content' property is a non-empty string\r",
+									"pm.test(\"Content is a non-empty string\", function () {\r",
+									"    pm.expect(jsonData.content).to.be.a(\"string\").and.to.not.be.empty;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -463,6 +817,30 @@
 			"item": [
 				{
 					"name": "Get all address",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response is an array\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -480,14 +858,13 @@
 						"method": "GET",
 						"header": [],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "accessToken",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYSIsImlhdCI6MTc0MDAzNzIzNiwiZXhwIjoxNzQwMDgwNDM2fQ.JYdfFitM-sPK9T0CFVJOqvMCy8oIDARU-dpHFU-DXrc",
-									"type": "text"
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/address",
@@ -508,7 +885,35 @@
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.collectionVariables.set(\"addressId\", pm.response.json().address.id)"
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the correct message\r",
+									"pm.test(\"Response contains addressId and correct message\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"addressId\");\r",
+									"    pm.expect(jsonData.addressId).to.be.a('number');\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"Address added successfully\");\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set(\"addressId\", pm.response.json().addressId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('addressFullName', 'Nguyen Van Khanh');\r",
+									"pm.collectionVariables.set('address', 'Go Vap - HCM');\r",
+									"pm.collectionVariables.set('addressPhone', '0987654321');"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -529,24 +934,13 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "fullName",
-									"value": "Nguyen Van Khanh",
-									"type": "text"
-								},
-								{
-									"key": "address",
-									"value": "HCM",
-									"type": "text"
-								},
-								{
-									"key": "phone",
-									"value": "0123456789",
-									"type": "text"
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"{{addressFullName}}\",\r\n    \"address\": \"{{address}}\",\r\n    \"phone\": \"{{addressPhone}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/address",
@@ -579,14 +973,13 @@
 						"method": "GET",
 						"header": [],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "accessToken",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYSIsImlhdCI6MTc0MDAzNzIzNiwiZXhwIjoxNzQwMDgwNDM2fQ.JYdfFitM-sPK9T0CFVJOqvMCy8oIDARU-dpHFU-DXrc",
-									"type": "text"
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/address/:id",
@@ -609,6 +1002,43 @@
 				},
 				{
 					"name": "Update a address",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('addressFullName', 'Truong Ngoc Hao');\r",
+									"pm.collectionVariables.set('address', 'Go Vap - HCM');\r",
+									"pm.collectionVariables.set('addressPhone', '0123456789');"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the correct message\r",
+									"pm.test(\"Response message is correct\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"Address updated successfully\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -623,24 +1053,13 @@
 						"method": "PUT",
 						"header": [],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "fullName",
-									"value": "Nguyen Van A",
-									"type": "text"
-								},
-								{
-									"key": "address",
-									"value": "Ha Noi",
-									"type": "text"
-								},
-								{
-									"key": "phone",
-									"value": "0987654321",
-									"type": "text"
+							"mode": "raw",
+							"raw": "{\r\n    \"fullName\": \"{{addressFullName}}\",\r\n    \"address\": \"{{address}}\",\r\n    \"phone\": \"{{addressPhone}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/address/:id",
@@ -663,6 +1082,32 @@
 				},
 				{
 					"name": "Delete a address",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the correct message\r",
+									"pm.test(\"Response message is correct\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"Address deleted successfully\");\r",
+									"});\r",
+									"\r",
+									"pm.collectionVariables.set('addressId', '');"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -712,6 +1157,30 @@
 			"item": [
 				{
 					"name": "Get all items in cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response is an array\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -799,6 +1268,18 @@
 				},
 				{
 					"name": "Update product in cart",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('quantity', 4);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -813,24 +1294,13 @@
 						"method": "PUT",
 						"header": [],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "productId",
-									"value": "1",
-									"type": "text"
-								},
-								{
-									"key": "quantity",
-									"value": "2",
-									"type": "text"
-								},
-								{
-									"key": "color",
-									"value": "Đen",
-									"type": "text"
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\": \"{{productId}}\",\r\n    \"quantity\": \"{{quantity}}\",\r\n    \"color\": \"{{color}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/carts/:productId",
@@ -867,20 +1337,13 @@
 						"method": "DELETE",
 						"header": [],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "productId",
-									"value": "1",
-									"type": "text",
-									"disabled": true
-								},
-								{
-									"key": "color",
-									"value": "Đen",
-									"type": "text"
+							"mode": "raw",
+							"raw": "{\r\n    \"color\": \"{{color}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/carts/:productId",
@@ -994,11 +1457,36 @@
 							"listen": "test",
 							"script": {
 								"exec": [
+									"// Test that the status code is 200\r",
 									"pm.test(\"Status code is 200\", function () {\r",
 									"    pm.response.to.have.status(200);\r",
 									"});\r",
 									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the correct message and orderId\r",
+									"pm.test(\"Response has correct message and orderId\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"Order created successfully\");\r",
+									"    pm.expect(jsonData).to.have.property(\"orderId\");\r",
+									"    pm.expect(jsonData.orderId).to.be.a(\"number\");\r",
+									"});\r",
+									"\r",
 									"pm.collectionVariables.set(\"orderId\", pm.response.json().orderId);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('payment', 'nganhang');\r",
+									"pm.collectionVariables.set('products', JSON.stringify([{ \"id\": 1, \"color\": \"Đen\", \"quantity\": 1 }]));\r",
+									"pm.collectionVariables.set('voucherCode', '');\r",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1020,7 +1508,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"payment\": \"nganhang\",\r\n  \"address\": 18,\r\n  \"products\": [\r\n    {\r\n      \"id\": 1,\r\n      \"color\": \"Đen\",\r\n      \"quantity\": 2\r\n    }\r\n  ],\r\n  \"voucherCode\": \"\"\r\n}",
+							"raw": "{\r\n  \"payment\": \"{{payment}}\",\r\n  \"address\": \"{{addressId}}\",\r\n  \"products\": {{products}},\r\n  \"voucherCode\": \"{{voucherCode}}\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1041,6 +1529,31 @@
 				},
 				{
 					"name": "Success paid",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the correct message\r",
+									"pm.test(\"Response message is correct\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"Order status updated successfully\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1055,34 +1568,13 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "payment",
-									"value": "",
-									"type": "text"
-								},
-								{
-									"key": "status",
-									"value": "",
-									"type": "text"
-								},
-								{
-									"key": "address",
-									"value": "",
-									"type": "text"
-								},
-								{
-									"key": "products",
-									"value": "",
-									"type": "text"
-								},
-								{
-									"key": "voucherCode",
-									"value": "",
-									"type": "text"
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/orders/:id/success",
@@ -1106,6 +1598,31 @@
 				},
 				{
 					"name": "Cancel a order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the correct cancellation message\r",
+									"pm.test(\"Response message is correct\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"Order canceled successfully\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1120,34 +1637,13 @@
 						"method": "DELETE",
 						"header": [],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "payment",
-									"value": "",
-									"type": "text"
-								},
-								{
-									"key": "status",
-									"value": "",
-									"type": "text"
-								},
-								{
-									"key": "address",
-									"value": "",
-									"type": "text"
-								},
-								{
-									"key": "products",
-									"value": "",
-									"type": "text"
-								},
-								{
-									"key": "voucherCode",
-									"value": "",
-									"type": "text"
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/orders/:id",
@@ -1175,6 +1671,55 @@
 			"item": [
 				{
 					"name": "Check voucher by Code",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response has the expected properties\r",
+									"pm.test(\"Response contains all required properties\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"id\");\r",
+									"    pm.expect(jsonData).to.have.property(\"code\");\r",
+									"    pm.expect(jsonData).to.have.property(\"discount\");\r",
+									"    pm.expect(jsonData).to.have.property(\"count\");\r",
+									"    pm.expect(jsonData).to.have.property(\"limit\");\r",
+									"    pm.expect(jsonData).to.have.property(\"usedId\");\r",
+									"});\r",
+									"\r",
+									"// Test that the properties have the correct types\r",
+									"pm.test(\"Properties have correct types\", function () {\r",
+									"    pm.expect(jsonData.id).to.be.a(\"number\");\r",
+									"    pm.expect(jsonData.code).to.be.a(\"string\");\r",
+									"    pm.expect(jsonData.discount).to.be.a(\"number\");\r",
+									"    pm.expect(jsonData.count).to.be.a(\"number\");\r",
+									"    pm.expect(jsonData.limit).to.be.an(\"array\");\r",
+									"    pm.expect(jsonData.usedId).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"// Test specific values\r",
+									"pm.test(\"Discount value is 0.1\", function () {\r",
+									"    pm.expect(jsonData.discount).to.eql(0.1);\r",
+									"});\r",
+									"\r",
+									"// Optionally, test that usedId contains specific expected values\r",
+									"pm.test(\"usedId contains number 1\", function () {\r",
+									"    pm.expect(jsonData.usedId).to.include(1);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1192,14 +1737,13 @@
 						"method": "GET",
 						"header": [],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "accessToken",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYSIsImlhdCI6MTc0MDAzNzIzNiwiZXhwIjoxNzQwMDgwNDM2fQ.JYdfFitM-sPK9T0CFVJOqvMCy8oIDARU-dpHFU-DXrc",
-									"type": "text"
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/vouchers/KHANHSTORE10",
@@ -1221,6 +1765,63 @@
 			"item": [
 				{
 					"name": "Get info user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response has all required properties\r",
+									"pm.test(\"Response contains all required properties\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"id\");\r",
+									"    pm.expect(jsonData).to.have.property(\"username\");\r",
+									"    pm.expect(jsonData).to.have.property(\"email\");\r",
+									"    pm.expect(jsonData).to.have.property(\"firstName\");\r",
+									"    pm.expect(jsonData).to.have.property(\"lastName\");\r",
+									"    pm.expect(jsonData).to.have.property(\"lock\");\r",
+									"    pm.expect(jsonData).to.have.property(\"information\");\r",
+									"});\r",
+									"\r",
+									"// Test that the properties have the correct types\r",
+									"pm.test(\"Properties have correct types\", function () {\r",
+									"    pm.expect(jsonData.id).to.be.a(\"number\");\r",
+									"    pm.expect(jsonData.username).to.be.a(\"string\");\r",
+									"    pm.expect(jsonData.email).to.be.a(\"string\");\r",
+									"    pm.expect(jsonData.firstName).to.be.a(\"string\");\r",
+									"    pm.expect(jsonData.lastName).to.be.a(\"string\");\r",
+									"    pm.expect(jsonData.lock).to.be.a(\"boolean\");\r",
+									"    pm.expect(jsonData.information).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"// Test the \"information\" array properties if available\r",
+									"pm.test(\"Information array items have required properties\", function () {\r",
+									"    jsonData.information.forEach(function(info) {\r",
+									"        pm.expect(info).to.have.property(\"id\");\r",
+									"        pm.expect(info).to.have.property(\"fullName\");\r",
+									"        pm.expect(info).to.have.property(\"address\");\r",
+									"        pm.expect(info).to.have.property(\"phone\");\r",
+									"        \r",
+									"        // Validate the types for each property in the information array\r",
+									"        pm.expect(info.id).to.be.a(\"number\");\r",
+									"        pm.expect(info.fullName).to.be.a(\"string\");\r",
+									"        pm.expect(info.address).to.be.a(\"string\");\r",
+									"        pm.expect(info.phone).to.be.a(\"string\");\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1238,14 +1839,13 @@
 						"method": "GET",
 						"header": [],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "accessToken",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYSIsImlhdCI6MTc0MDAzNzIzNiwiZXhwIjoxNzQwMDgwNDM2fQ.JYdfFitM-sPK9T0CFVJOqvMCy8oIDARU-dpHFU-DXrc",
-									"type": "text"
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/user",
@@ -1266,6 +1866,37 @@
 			"item": [
 				{
 					"name": "Get avatar url",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains botAvatar and userAvatar\r",
+									"pm.test(\"Response contains botAvatar and userAvatar\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"botAvatar\");\r",
+									"    pm.expect(jsonData).to.have.property(\"userAvatar\");\r",
+									"});\r",
+									"\r",
+									"// Test that botAvatar and userAvatar are strings\r",
+									"pm.test(\"Avatar properties are strings\", function () {\r",
+									"    pm.expect(jsonData.botAvatar).to.be.a(\"string\");\r",
+									"    pm.expect(jsonData.userAvatar).to.be.a(\"string\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1283,14 +1914,13 @@
 						"method": "GET",
 						"header": [],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "accessToken",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYSIsImlhdCI6MTc0MDAzNzIzNiwiZXhwIjoxNzQwMDgwNDM2fQ.JYdfFitM-sPK9T0CFVJOqvMCy8oIDARU-dpHFU-DXrc",
-									"type": "text"
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/img",
@@ -1311,6 +1941,32 @@
 			"item": [
 				{
 					"name": "Get status",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains \"status\" and \"chatbot\" properties\r",
+									"pm.test(\"Response contains status and chatbot properties\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"status\");\r",
+									"    pm.expect(jsonData).to.have.property(\"chatbot\");\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1328,14 +1984,13 @@
 						"method": "GET",
 						"header": [],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "accessToken",
-									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoiYSIsImlhdCI6MTc0MDAzNzIzNiwiZXhwIjoxNzQwMDgwNDM2fQ.JYdfFitM-sPK9T0CFVJOqvMCy8oIDARU-dpHFU-DXrc",
-									"type": "text"
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/status",
@@ -1350,110 +2005,6 @@
 					"response": []
 				}
 			]
-		},
-		{
-			"name": "Auth (Login) Copy",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.environment.set('accessToken', pm.response.json().accessToken);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "username",
-							"value": "a",
-							"type": "text"
-						},
-						{
-							"key": "password",
-							"value": "khanh",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "{{base_url}}/accounts/auth",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"accounts",
-						"auth"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Auth (Login) Copy",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\", function () {\r",
-							"    pm.response.to.have.status(200);\r",
-							"});\r",
-							"\r",
-							"pm.environment.set('accessToken', pm.response.json().accessToken);"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "noauth"
-				},
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "urlencoded",
-					"urlencoded": [
-						{
-							"key": "username",
-							"value": "a",
-							"type": "text"
-						},
-						{
-							"key": "password",
-							"value": "khanh",
-							"type": "text"
-						}
-					]
-				},
-				"url": {
-					"raw": "{{base_url}}/accounts/auth",
-					"host": [
-						"{{base_url}}"
-					],
-					"path": [
-						"accounts",
-						"auth"
-					]
-				}
-			},
-			"response": []
 		}
 	],
 	"variable": [
@@ -1463,6 +2014,66 @@
 		},
 		{
 			"key": "orderId",
+			"value": ""
+		},
+		{
+			"key": "username",
+			"value": ""
+		},
+		{
+			"key": "password",
+			"value": ""
+		},
+		{
+			"key": "email",
+			"value": ""
+		},
+		{
+			"key": "firstName",
+			"value": ""
+		},
+		{
+			"key": "lastName",
+			"value": ""
+		},
+		{
+			"key": "newPassword",
+			"value": ""
+		},
+		{
+			"key": "addressFullName",
+			"value": ""
+		},
+		{
+			"key": "address",
+			"value": ""
+		},
+		{
+			"key": "addressPhone",
+			"value": ""
+		},
+		{
+			"key": "productId",
+			"value": ""
+		},
+		{
+			"key": "quantity",
+			"value": ""
+		},
+		{
+			"key": "color",
+			"value": ""
+		},
+		{
+			"key": "payment",
+			"value": ""
+		},
+		{
+			"key": "products",
+			"value": ""
+		},
+		{
+			"key": "voucherCode",
 			"value": ""
 		}
 	]

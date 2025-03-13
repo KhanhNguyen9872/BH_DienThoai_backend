@@ -133,7 +133,7 @@ const getOrderForUser = async (orderId, userId) => {
  */
 const getFullOrderDetails = async (orderId) => {
     const [orderDetails] = await db.promise().query(
-        `SELECT u.first_name, u.last_name, oi.payment, oi.products, oi.orderAt 
+        `SELECT u.first_name, u.last_name, oi.status, oi.payment, oi.products, oi.orderAt 
          FROM orders o
          JOIN user u ON u.id = o.user_id
          JOIN order_info oi ON oi.order_id = o.id

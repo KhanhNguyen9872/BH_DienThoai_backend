@@ -4,7 +4,7 @@ const db = require('../utils/mysql');
  * Get all addresses belonging to a user.
  */
 const getAddressesByUser = async (userId) => {
-    const query = 'SELECT * FROM address WHERE user_id = ?';
+    const query = 'SELECT id, full_name, address, phone FROM address WHERE user_id = ?';
     const [addresses] = await db.promise().query(query, [userId]);
     return addresses;
 };
@@ -13,7 +13,7 @@ const getAddressesByUser = async (userId) => {
  * Get a single address by addressId for a specific user.
  */
 const getAddressByIdAndUser = async (addressId, userId) => {
-    const query = 'SELECT * FROM address WHERE id = ? AND user_id = ?';
+    const query = 'SELECT id, full_name, address, phone FROM address WHERE id = ? AND user_id = ?';
     const [address] = await db.promise().query(query, [addressId, userId]);
     return address;
 };
