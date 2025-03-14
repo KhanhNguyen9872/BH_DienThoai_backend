@@ -82,7 +82,6 @@ class AccountController {
 
       return res.status(201).json(result);
     } catch (error) {
-      console.error(error);
       return res.status(500).json({ error: 'username or email is already registered!' });
     }
   }

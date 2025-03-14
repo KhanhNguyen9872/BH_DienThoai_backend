@@ -29,7 +29,7 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-const revokeToken = (user_id) => {
+const revokeToken = async (user_id) => {
   for (let i = sessions.length - 1; i >= 0; i--) {
     if (sessions[i].user_id === user_id) {
       sessions.splice(i, 1);

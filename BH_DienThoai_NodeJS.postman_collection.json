@@ -365,8 +365,8 @@
 							"script": {
 								"exec": [
 									"// Test that the status code is 200\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
 									"});\r",
 									"\r",
 									"// Parse the response JSON\r",
@@ -886,8 +886,8 @@
 							"script": {
 								"exec": [
 									"// Test that the status code is 200\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
 									"});\r",
 									"\r",
 									"// Parse the response JSON\r",
@@ -956,6 +956,41 @@
 				},
 				{
 					"name": "Get a address",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains all required properties\r",
+									"pm.test(\"Response contains required properties\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"id\");\r",
+									"    pm.expect(jsonData).to.have.property(\"full_name\");\r",
+									"    pm.expect(jsonData).to.have.property(\"address\");\r",
+									"    pm.expect(jsonData).to.have.property(\"phone\");\r",
+									"});\r",
+									"\r",
+									"// Test that the properties have the correct types\r",
+									"pm.test(\"Properties have correct types\", function () {\r",
+									"    pm.expect(jsonData.id).to.be.a(\"number\");\r",
+									"    pm.expect(jsonData.full_name).to.be.a(\"string\");\r",
+									"    pm.expect(jsonData.address).to.be.a(\"string\");\r",
+									"    pm.expect(jsonData.phone).to.be.a(\"string\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1221,6 +1256,43 @@
 				},
 				{
 					"name": "Add product to cart",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.collectionVariables.set('productId', 1);\r",
+									"pm.collectionVariables.set('quantity', 1);\r",
+									"pm.collectionVariables.set('color', 'Đen');"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the correct message\r",
+									"pm.test(\"Response message is correct\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"Product added to cart successfully\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1235,24 +1307,13 @@
 						"method": "POST",
 						"header": [],
 						"body": {
-							"mode": "urlencoded",
-							"urlencoded": [
-								{
-									"key": "productId",
-									"value": "1",
-									"type": "text"
-								},
-								{
-									"key": "quantity",
-									"value": "0",
-									"type": "text"
-								},
-								{
-									"key": "color",
-									"value": "Đen",
-									"type": "text"
+							"mode": "raw",
+							"raw": "{\r\n    \"productId\": \"{{productId}}\",\r\n    \"quantity\": \"{{quantity}}\",\r\n    \"color\": \"{{color}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
 								}
-							]
+							}
 						},
 						"url": {
 							"raw": "{{base_url}}/carts",
@@ -1274,6 +1335,29 @@
 							"script": {
 								"exec": [
 									"pm.collectionVariables.set('quantity', 4);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the correct message\r",
+									"pm.test(\"Response message is correct\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"Cart updated successfully\");\r",
+									"});\r",
+									""
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1323,6 +1407,31 @@
 				},
 				{
 					"name": "Delete product from cart",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the correct message\r",
+									"pm.test(\"Response message is correct\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"Product removed from cart successfully\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -1371,6 +1480,30 @@
 			"item": [
 				{
 					"name": "Get all orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response is an array\r",
+									"pm.test(\"Response is an array\", function () {\r",
+									"    pm.expect(jsonData).to.be.an('array');\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1411,6 +1544,77 @@
 				},
 				{
 					"name": "Get info a order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test that the status code is 200\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Parse the response JSON\r",
+									"var jsonData = pm.response.json();\r",
+									"\r",
+									"// Test that the response contains the required properties\r",
+									"pm.test(\"Response contains required order properties\", function () {\r",
+									"    pm.expect(jsonData).to.have.property(\"id\");\r",
+									"    pm.expect(jsonData).to.have.property(\"orderAt\");\r",
+									"    pm.expect(jsonData).to.have.property(\"payment\");\r",
+									"    pm.expect(jsonData).to.have.property(\"status\");\r",
+									"    pm.expect(jsonData).to.have.property(\"address\");\r",
+									"    pm.expect(jsonData).to.have.property(\"totalPrice\");\r",
+									"    pm.expect(jsonData).to.have.property(\"products\");\r",
+									"});\r",
+									"\r",
+									"// Test that the properties have the correct types and values where applicable\r",
+									"pm.test(\"Properties have correct types\", function () {\r",
+									"    pm.expect(jsonData.id).to.be.a(\"number\");\r",
+									"    pm.expect(jsonData.orderAt).to.be.a(\"string\");\r",
+									"    pm.expect(jsonData.payment).to.be.a(\"string\");\r",
+									"    pm.expect(jsonData.status).to.be.a(\"string\");\r",
+									"    pm.expect(jsonData.totalPrice).to.be.a(\"number\");\r",
+									"    pm.expect(jsonData.address).to.be.an(\"object\");\r",
+									"    pm.expect(jsonData.products).to.be.an(\"array\");\r",
+									"});\r",
+									"\r",
+									"// Test the address object properties\r",
+									"pm.test(\"Address object has required properties\", function () {\r",
+									"    pm.expect(jsonData.address).to.have.property(\"name\");\r",
+									"    pm.expect(jsonData.address).to.have.property(\"phone\");\r",
+									"    pm.expect(jsonData.address).to.have.property(\"address\");\r",
+									"    pm.expect(jsonData.address.name).to.be.a(\"string\");\r",
+									"    pm.expect(jsonData.address.phone).to.be.a(\"string\");\r",
+									"    pm.expect(jsonData.address.address).to.be.a(\"string\");\r",
+									"});\r",
+									"\r",
+									"// Test the products array and its items\r",
+									"pm.test(\"Products array items have required properties\", function () {\r",
+									"    jsonData.products.forEach(function(product) {\r",
+									"        pm.expect(product).to.have.property(\"id\");\r",
+									"        pm.expect(product).to.have.property(\"name\");\r",
+									"        pm.expect(product).to.have.property(\"color\");\r",
+									"        pm.expect(product).to.have.property(\"price\");\r",
+									"        pm.expect(product).to.have.property(\"quantity\");\r",
+									"        pm.expect(product).to.have.property(\"totalPrice\");\r",
+									"        \r",
+									"        // Validate types\r",
+									"        pm.expect(product.id).to.be.a(\"number\");\r",
+									"        pm.expect(product.name).to.be.a(\"string\");\r",
+									"        pm.expect(product.color).to.be.a(\"string\");\r",
+									"        pm.expect(product.price).to.be.a(\"number\");\r",
+									"        pm.expect(product.quantity).to.be.a(\"number\");\r",
+									"        pm.expect(product.totalPrice).to.be.a(\"number\");\r",
+									"    });\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
 					"protocolProfileBehavior": {
 						"disableBodyPruning": true
 					},
@@ -1458,8 +1662,8 @@
 							"script": {
 								"exec": [
 									"// Test that the status code is 200\r",
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
 									"});\r",
 									"\r",
 									"// Parse the response JSON\r",

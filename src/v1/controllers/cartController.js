@@ -53,6 +53,11 @@ class CartController {
             if (existingCartItem) {
                 totalQuantity += parseInt(existingCartItem.quantity);
             }
+
+            console.log(productId);
+            console.log(quantity);
+            console.log(color);
+            console.log(existingCartItem);
     
             // If the total quantity exceeds the available quantity for that color, return an error
             if (totalQuantity > colorProduct.quantity) {
