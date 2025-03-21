@@ -53,11 +53,6 @@ class CartController {
             if (existingCartItem) {
                 totalQuantity += parseInt(existingCartItem.quantity);
             }
-
-            console.log(productId);
-            console.log(quantity);
-            console.log(color);
-            console.log(existingCartItem);
     
             // If the total quantity exceeds the available quantity for that color, return an error
             if (totalQuantity > colorProduct.quantity) {
@@ -96,6 +91,22 @@ class CartController {
             await CartModel.removeFromCart(userId, productId, color);
 
             return res.json({ message: 'Product removed from cart successfully' });
+        } catch (error) {
+            console.error('Error deleting product from cart:', error);
+            return res.status(500).json({ message: 'Internal server error' });
+        }
+    }
+
+    async removeCart(req, res) {
+        try {
+            const userId = req.user.userId;
+
+            const data = await CartModel.removeCart(userId);
+            if (data) {
+                return res.json({ message: 'Product removed from cart successfully' });
+            } else {
+                return res.status(500).json({ message: 'Cannot remove cart' });
+            }
         } catch (error) {
             console.error('Error deleting product from cart:', error);
             return res.status(500).json({ message: 'Internal server error' });

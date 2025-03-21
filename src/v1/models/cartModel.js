@@ -46,6 +46,17 @@ const removeFromCart = async (userId, productId, color) => {
     );
 };
 
+const removeCart = async (userId) => {
+    try {
+        return await db.promise().query(
+            'DELETE FROM cart WHERE user_id = ?',
+            [userId]
+        );
+    } catch (error) {
+        return null;
+    }
+};
+
 /**
  * Update cart item (quantity or color) for a specific product in a user's cart.
  */
@@ -60,5 +71,6 @@ module.exports = {
     getCartItems,
     addToCart,
     removeFromCart,
+    removeCart,
     updateCartItem
 };
